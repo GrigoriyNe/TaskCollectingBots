@@ -1,1 +1,1 @@
-﻿public class ResourcesGenerator : ObjectSpawner<Resources> { }
+﻿public class ResourcesGenerator : ObjectSpawner<Resource> { }

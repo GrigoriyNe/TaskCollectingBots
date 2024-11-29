@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class ResourcesPrefabsList : MonoBehaviour
 {
-    [SerializeField] private List<Resources> _resources;
+    [SerializeField] private List<Resource> _resources;
 
-    public Resources GetResourse()
+    public Resource GetResourse()
     {
         int valueRandom = Random.Range(0, _resources.Count);
 

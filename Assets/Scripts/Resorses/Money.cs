@@ -1,1 +1,1 @@
-﻿public class Money : Resources { }
+﻿public class Money : Resource { }

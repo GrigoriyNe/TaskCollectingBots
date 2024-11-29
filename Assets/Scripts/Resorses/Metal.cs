@@ -1,1 +1,1 @@
-﻿public class Metal : Resources { }
+﻿public class Metal : Resource { }

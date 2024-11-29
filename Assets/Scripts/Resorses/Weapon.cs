@@ -1,2 +1,2 @@
 ﻿
-public class Weapon : Resources { }
+public class Weapon : Resource { }

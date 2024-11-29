@@ -1,1 +1,1 @@
-﻿public class Wood : Resources { }
+﻿public class Wood : Resource { }

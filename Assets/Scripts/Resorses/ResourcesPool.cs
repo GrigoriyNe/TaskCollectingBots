@@ -1,4 +1,4 @@
-﻿public class ResourcesPool : ObjectPool<Resources> 
+﻿public class ResourcesPool : ObjectPool<Resource> 
 {
     
 }

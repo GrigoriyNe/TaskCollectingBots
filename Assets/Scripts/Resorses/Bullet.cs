@@ -1,2 +1,2 @@
 ﻿
-public class Bullet : Resources { }
+public class Bullet : Resource { }
