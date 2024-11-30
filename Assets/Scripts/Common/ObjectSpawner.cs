@@ -3,11 +3,15 @@ using UnityEngine;
 
 public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObject
 {
+    [SerializeField] protected ObjectPool<T> Pool;
     [SerializeField] private float _delay;
-    [SerializeField] private ObjectPool<T> _pool;
+    [SerializeField] private int _maxItem = 10;
+    [SerializeField] private int _startItem = 3;
 
-    private float _minRandomValueSpawnPoint = -5;
-    private float _maxRandomValueSpawnPoint = 5;
+    private int _itemCounter = 0;
+    private float _minRandomValueSpawnPoint = -10;
+    private float _maxRandomValueSpawnPoint = 10;
+
 
     private Coroutine _coroutine;
 
@@ -18,8 +22,18 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
 
     private void Start()
     {
+        for (int i = 0; i < _startItem; i++)
+        {
+            Spawn();
+        }
+
         if (_coroutine == null)
             _coroutine = StartCoroutine(GenerateObject());
+    }
+
+    public void Activated()
+    {
+        StartCoroutine(GenerateObject());
     }
 
     public void SetPause(bool activate)
@@ -30,16 +44,7 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
             _coroutine = StartCoroutine(GenerateObject());
     }
 
-    private void Spawn()
-    {
-        var item = _pool.GetObject();
-
-        Vector3 randomSpawnPosition = GetRandomSpawnPoint();
-        item.transform.position = randomSpawnPosition;
-        item.gameObject.SetActive(true);
-    }
-
-    private Vector3 GetRandomSpawnPoint()
+    protected Vector3 GetRandomSpawnPoint()
     {
         float randomValueSpawn = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);
 
@@ -50,14 +55,24 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
         return randomSpawnPosition;
     }
 
+    private void Spawn()
+    {
+        var item = Pool.GetObject();
+
+        Vector3 randomSpawnPosition = GetRandomSpawnPoint();
+        item.transform.position = randomSpawnPosition;
+        item.gameObject.SetActive(true);
+    }
+
     private IEnumerator GenerateObject()
     {
         var wait = new WaitForSeconds(_delay);
 
-        while (enabled)
+        while (_itemCounter <= _maxItem)
         {
             Spawn();
             yield return wait;
         }
     }
+
 }

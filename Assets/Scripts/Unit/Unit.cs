@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -14,32 +15,40 @@ public class Unit : SpawnerableObject
     private bool _isBisy = false;
     private bool _isTakedResource = false;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out Resource resours) && _isTakedResource == false)
-        {
-            _target.Taked(this);
-            _isTakedResource = true;
+    public bool IsBisy => _isBisy;
 
-            _coroutine = null;
-            _coroutine = StartCoroutine(GoToBase());
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.TryGetComponent(out Resource resource) && _isTakedResource == false)
+        {
+            if (resource.IsTaked == false)
+            {
+                _target.Taked(this);
+                _isTakedResource = true;
+                _coroutine = null;
+
+                _coroutine = StartCoroutine(GoToBase());
+            }
         }
 
         else if (other.TryGetComponent(out Base _) && _isTakedResource)
         {
-            _target.Throw();
+            _target.Throw(_base);
+            _coroutine = null;
             _isTakedResource = false;
             _isBisy = false;
-            _coroutine = null;
         }
     }
 
     public void TakeOrder(Transform target)
     {
-        if (target.TryGetComponent(out Resource resours))
+        if (target.TryGetComponent(out Resource resours) && _isBisy == false)
         {
-            _target = resours;
-            _isBisy = true;
+            if (resours.IsTaked == false)
+            {
+                _target = resours;
+                _isBisy = true;
+            }
 
             if (_coroutine == null)
                 _coroutine = StartCoroutine(GoToResource());
@@ -50,8 +59,17 @@ public class Unit : SpawnerableObject
     {
         while (_isTakedResource == false)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
-            transform.LookAt(_target.transform.position);
+            if (_target.IsTaked == false)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
+                transform.LookAt(_target.transform.position);
+            }
+            else
+            {
+                _coroutine = null;
+                _isTakedResource = false;
+                _isBisy = false;
+            }
 
             yield return null;
         }

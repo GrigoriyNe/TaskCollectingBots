@@ -4,10 +4,10 @@ using UnityEngine;
 public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 {
     [SerializeField] protected Transform Container;
-    [SerializeField] protected ResourcesPrefabsList Prefabs;
+    [SerializeField] private PrefabsList _prefabs;
 
     protected Queue<T> Pool;
-    private int _initCreateValue = 10;
+    protected int InitCreateValue = 10;
 
     private void Awake()
     {
@@ -22,9 +22,14 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 
     public SpawnerableObject GetObject()
     {
+        return CreateObject();
+    }
+
+    private SpawnerableObject CreateObject()
+    {
         SpawnerableObject item;
 
-        if (Pool.Count < _initCreateValue)
+        if (Pool.Count < InitCreateValue)
         {
             item = Init();
             Activate(item);
@@ -64,7 +69,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 
     private SpawnerableObject Init()
     {
-        SpawnerableObject item = Instantiate(Prefabs.GetResourse());
+        SpawnerableObject item = Instantiate(_prefabs.Get());
         item.transform.parent = Container;
      //   item.Returned += PutObject;
 
