@@ -7,7 +7,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
     [SerializeField] private PrefabsList _prefabs;
 
     protected Queue<T> Pool;
-    protected int InitCreateValue = 10;
+    protected int InitCreateValue = 1;
 
     private void Awake()
     {
@@ -48,6 +48,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         item.Returned -= PutObject;
         item.gameObject.SetActive(false);
         Pool.Enqueue(item as T);
+        item.transform.parent = Container;
     }
 
     protected void Activate(SpawnerableObject item)

@@ -51,14 +51,8 @@ public class UnitDirector : MonoBehaviour
             }
         }
 
-
         int randomValue = Random.Range(0, _freeUnits.Count);
 
         return _freeUnits[randomValue];
-    }
-
-    private void OnUnitFree(Unit unit)
-    {
-        _freeUnits.Add(unit);
     }
 }

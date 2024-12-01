@@ -15,6 +15,8 @@ public class Unit : SpawnerableObject
     private bool _isBisy = false;
     private bool _isTakedResource = false;
 
+    public event Action<Resource> IsCollect;
+
     public bool IsBisy => _isBisy;
 
     private void OnTriggerStay(Collider other)
@@ -33,6 +35,7 @@ public class Unit : SpawnerableObject
 
         else if (other.TryGetComponent(out Base _) && _isTakedResource)
         {
+            IsCollect?.Invoke(_target);
             _target.Throw(_base);
             _coroutine = null;
             _isTakedResource = false;

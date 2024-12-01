@@ -39,11 +39,6 @@ public class Base : MonoBehaviour
                 }
             }
 
-            //if (_resoursesPosition.Count > 0)
-            //{
-            //    _unitDirector.GetOrder(_resoursesPosition);
-            //}
-
             yield return _wait;
         }
     }
