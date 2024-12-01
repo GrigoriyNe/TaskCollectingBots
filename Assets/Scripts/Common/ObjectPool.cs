@@ -72,7 +72,6 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
     {
         SpawnerableObject item = Instantiate(_prefabs.Get());
         item.transform.parent = Container;
-     //   item.Returned += PutObject;
 
         return item;
     }

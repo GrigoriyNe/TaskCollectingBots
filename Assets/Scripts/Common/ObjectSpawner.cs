@@ -14,11 +14,6 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
 
     private Coroutine _coroutine;
 
-    private void OnDisable()
-    {
-        _coroutine = null;
-    }
-
     private void Start()
     {
         for (int i = 0; i < _startItem; i++)
@@ -30,18 +25,10 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
             _coroutine = StartCoroutine(GenerateObject());
     }
 
-    //public void Activated()
-    //{
-    //    StartCoroutine(GenerateObject());
-    //}
-
-    //public void SetPause(bool activate)
-    //{
-    //    if (activate)
-    //        _coroutine = null;
-    //    else
-    //        _coroutine = StartCoroutine(GenerateObject());
-    //}
+    private void OnDisable()
+    {
+        _coroutine = null;
+    }
 
     protected Vector3 GetRandomSpawnPoint()
     {
@@ -65,7 +52,7 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
 
     private IEnumerator GenerateObject()
     {
-        var wait = new WaitForSeconds(_delay);
+        WaitForSeconds wait = new WaitForSeconds(_delay);
 
         while (_itemCounter <= _maxItem)
         {

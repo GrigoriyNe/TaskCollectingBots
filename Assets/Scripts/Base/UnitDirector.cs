@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitDirector : MonoBehaviour
@@ -9,7 +8,7 @@ public class UnitDirector : MonoBehaviour
     private List<Unit> _freeUnits;
     private Coroutine _coroutine;
     private bool _isTaskOnQuene = false;
-    private Queue<Transform> tasks = new Queue<Transform>();
+    private Queue<Transform> _tasks = new Queue<Transform>();
 
     private void OnEnable()
     {
@@ -27,7 +26,7 @@ public class UnitDirector : MonoBehaviour
         else if (_isTaskOnQuene)
         {
             Unit unit = GetFreeUnit();
-            unit.TakeOrder(tasks.Dequeue());
+            unit.TakeOrder(_tasks.Dequeue());
         }
         else
         {
@@ -38,7 +37,7 @@ public class UnitDirector : MonoBehaviour
 
     private void WriteTask(Transform _resoursePosition)
     {
-        tasks.Enqueue(_resoursePosition);
+        _tasks.Enqueue(_resoursePosition);
     }
 
     private Unit GetFreeUnit()

@@ -1,39 +1,30 @@
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 [RequireComponent (typeof(Rigidbody))]
 public class Resource : SpawnerableObject
 {
-    private Rigidbody _rb;
-    public bool IsOdered {  get; private set; }
+    private Rigidbody _rigidboby;
     public bool IsTaked {  get; private set; }
 
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
-        IsOdered = false;
+        _rigidboby = GetComponent<Rigidbody>();
         IsTaked = false;
-    }
-
-    public void ChangeOdered()
-    {
-        IsOdered = true;
     }
 
     public void Taked(Unit unit)
     {
-        _rb.isKinematic = true;
+        _rigidboby.isKinematic = true;
         IsTaked = true;
         transform.SetParent(unit.transform);
         transform.position = unit.transform.position;
     }
 
-    public void Throw(Base thisBase)
+    public void Throw()
     {
-        _rb.isKinematic = false;
+        _rigidboby.isKinematic = false;
         transform.SetParent(null);
         IsTaked = false;
-        IsOdered = false;
         Return();
     }
 }

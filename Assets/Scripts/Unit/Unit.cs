@@ -2,15 +2,15 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Unit : SpawnerableObject
+public class Unit : MonoBehaviour
 {
     [SerializeField] private Base _base;
     [SerializeField] private float _speed = 2;
 
     private WaitForSecondsRealtime _wait;
     private Coroutine _coroutine;
-    private float _waitValue = 5;
     private Resource _target;
+    private float _waitValue = 5;
 
     private bool _isBisy = false;
     private bool _isTakedResource = false;
@@ -36,7 +36,7 @@ public class Unit : SpawnerableObject
         else if (other.TryGetComponent(out Base _) && _isTakedResource)
         {
             IsCollect?.Invoke(_target);
-            _target.Throw(_base);
+            _target.Throw();
             _coroutine = null;
             _isTakedResource = false;
             _isBisy = false;
@@ -63,8 +63,9 @@ public class Unit : SpawnerableObject
         while (_isTakedResource == false)
         {
             if (_target.IsTaked == false)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
+            { 
+                Vector3 targetPosition = new Vector3(_target.transform.position.x, transform.position.y, _target.transform.position.z); 
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, _speed * Time.deltaTime);
                 transform.LookAt(_target.transform.position);
             }
             else
@@ -82,7 +83,8 @@ public class Unit : SpawnerableObject
     {
         while (_isTakedResource)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _base.transform.position, _speed * Time.deltaTime);
+            Vector3 targetPosition = new Vector3(_base.transform.position.x, transform.position.y, _base.transform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, _speed * Time.deltaTime);
             transform.LookAt(_base.transform.position);
 
             yield return null;

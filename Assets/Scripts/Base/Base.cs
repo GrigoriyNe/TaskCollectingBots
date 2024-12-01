@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Base : MonoBehaviour
 {
-
     [SerializeField] private float _radius = 50;
+    [SerializeField] private ParticleSystemRenderer _effect;
     [SerializeField] private UnitDirector _unitDirector;
     [SerializeField] private float _waitScaningValue = 5;
 
@@ -26,6 +24,7 @@ public class Base : MonoBehaviour
         while (enabled)
         {
             Collider[] hits = Physics.OverlapSphere(transform.position, _radius);
+            Instantiate(_effect, transform.position, transform.rotation);
 
             foreach (Collider hit in hits)
             {
@@ -34,7 +33,6 @@ public class Base : MonoBehaviour
                     if (item.IsTaked == false)
                     {
                         _unitDirector.GetOrder(item.transform);
-                        item.ChangeOdered();
                     }
                 }
             }

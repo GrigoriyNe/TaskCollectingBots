@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class BaseStorageView : MonoBehaviour
 {
+    const string Wood = "Wood: ";
+    const string Metal = "Metal: ";
+    const string Bullets = "Bullets: ";
+    const string Money = "Money: ";
+    const string Weapon = "Weapon: ";
+
     [SerializeField] private TextMeshProUGUI _woodCounterText;
     [SerializeField] private TextMeshProUGUI _metalCounterText;
     [SerializeField] private TextMeshProUGUI _bulletCounterText;
@@ -11,27 +17,31 @@ public class BaseStorageView : MonoBehaviour
 
     public void ChangeViewWood(int value)
     {
-        _woodCounterText.text = value.ToString();
+        string viewText = Wood + value.ToString();
+        _woodCounterText.text = viewText;
     }
 
     public void ChangeViewMetal(int value)
     {
-        _metalCounterText.text = value.ToString();
+        string viewText = Metal + value.ToString();
+        _metalCounterText.text = viewText;
     }
 
     public void ChangeViewBullet(int value)
     {
-        _bulletCounterText.text = value.ToString();
+        string viewText = Bullets + value.ToString(); 
+        _bulletCounterText.text = viewText;
     }
 
     public void ChangeViewMoney(int value)
     {
-        _moneyCounterText.text = value.ToString();
+        string viewText = Money + value.ToString();
+        _moneyCounterText.text = viewText;
     }
 
     public void ChangeViewWeapon(int value)
     {
-        _weaponCounterText.text = value.ToString();
+        string viewText = Weapon + value.ToString();
+        _weaponCounterText.text = viewText;
     }
-
 }

@@ -20,7 +20,6 @@ public class BaseStorage : MonoBehaviour
         }
     }
 
-
     private void OnCollect(Resource resource)
     {
         if (resource.TryGetComponent(out Wood _))
@@ -31,22 +30,22 @@ public class BaseStorage : MonoBehaviour
         else if (resource.TryGetComponent(out Metal _))
         {
             _metalCounter++;
-            _viewResource.ChangeViewMetal(_woodCounter);
+            _viewResource.ChangeViewMetal(_metalCounter);
         }
         else if (resource.TryGetComponent(out Bullet _))
         {
             _bulletCounter++;
-            _viewResource.ChangeViewBullet(_woodCounter);
+            _viewResource.ChangeViewBullet(_bulletCounter);
         }
         else if (resource.TryGetComponent(out Money _))
         {
             _moneyCounter++;
-            _viewResource.ChangeViewMoney(_woodCounter);
+            _viewResource.ChangeViewMoney(_moneyCounter);
         }
         else if (resource.TryGetComponent(out Weapon _))
         {
             _weaponCounter++;
-            _viewResource.ChangeViewWeapon(_woodCounter);
+            _viewResource.ChangeViewWeapon(_weaponCounter);
         }
     }
 }
