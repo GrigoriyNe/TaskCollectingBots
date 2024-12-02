@@ -23,7 +23,9 @@ public class Unit : MonoBehaviour
     {
         if (other.TryGetComponent(out Resource resource) && _isTakedResource == false)
         {
-            if (resource.IsTaked == false)
+            Vector3 targetPosition = resource.transform.position;
+
+            if (transform.position.x == targetPosition.x && transform.position.z == targetPosition.z)
             {
                 _target.Taked(this);
                 _isTakedResource = true;
@@ -31,6 +33,7 @@ public class Unit : MonoBehaviour
 
                 _coroutine = StartCoroutine(GoToBase());
             }
+
         }
 
         else if (other.TryGetComponent(out Base _) && _isTakedResource)
@@ -47,11 +50,10 @@ public class Unit : MonoBehaviour
     {
         if (target.TryGetComponent(out Resource resours) && _isBisy == false)
         {
-            if (resours.IsTaked == false)
-            {
-                _target = resours;
-                _isBisy = true;
-            }
+
+            _target = resours;
+            _isBisy = true;
+
 
             if (_coroutine == null)
                 _coroutine = StartCoroutine(GoToResource());
@@ -62,18 +64,11 @@ public class Unit : MonoBehaviour
     {
         while (_isTakedResource == false)
         {
-            if (_target.IsTaked == false)
-            { 
-                Vector3 targetPosition = new Vector3(_target.transform.position.x, transform.position.y, _target.transform.position.z); 
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, _speed * Time.deltaTime);
-                transform.LookAt(_target.transform.position);
-            }
-            else
-            {
-                _coroutine = null;
-                _isTakedResource = false;
-                _isBisy = false;
-            }
+
+            Vector3 targetPosition = new Vector3(_target.transform.position.x, transform.position.y, _target.transform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, _speed * Time.deltaTime);
+            transform.LookAt(_target.transform.position);
+
 
             yield return null;
         }

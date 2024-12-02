@@ -1,49 +1,66 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitDirector : MonoBehaviour
 {
     [SerializeField] private List<Unit> _units;
 
-    private List<Unit> _freeUnits;
+    private List<Unit> _freeUnits = new List<Unit>();
+    private Queue<Transform> _tasks = new Queue<Transform>();
+
+    private Unit _freeUnit;
     private Coroutine _coroutine;
     private bool _isTaskOnQuene = false;
-    private Queue<Transform> _tasks = new Queue<Transform>();
+
 
     private void OnEnable()
     {
-        _freeUnits = new List<Unit>();
         GetFreeUnit();
     }
 
-    public void GetOrder(Transform _resoursePosition)
+    private IEnumerator GetOrders()
     {
-        if (_freeUnits.Count > 0)
+        while (_tasks.Count > 0)
         {
             Unit unit = GetFreeUnit();
-            unit.TakeOrder(_resoursePosition);
+            {
+                unit.TakeOrder(_tasks.Dequeue());
+            }
+            yield return null;
+
         }
-        else if (_isTaskOnQuene)
+        _coroutine = null;
+
+    }
+
+    public void SetOrder(Queue<Transform> _resoursePosition)
+    {
+        if (_resoursePosition.Count > 0)
         {
-            Unit unit = GetFreeUnit();
-            unit.TakeOrder(_tasks.Dequeue());
-        }
-        else
-        {
-            _isTaskOnQuene = true;
-            WriteTask(_resoursePosition);
+            _tasks = _resoursePosition;
+
+            if (_coroutine == null)
+                _coroutine = StartCoroutine(GetOrders());
         }
     }
 
-    private void WriteTask(Transform _resoursePosition)
+    private void OnFreeUnit(Resource _)
     {
-        _tasks.Enqueue(_resoursePosition);
+        if (_freeUnits.Count > 0)
+        {
+            _freeUnits.Add(_freeUnit);
+        }
     }
+
 
     private Unit GetFreeUnit()
     {
         foreach (Unit unit in _units)
         {
+            unit.IsCollect += OnFreeUnit;
+            _freeUnit = unit;
+
             if (unit.IsBisy == false)
             {
                 _freeUnits.Add(unit);
