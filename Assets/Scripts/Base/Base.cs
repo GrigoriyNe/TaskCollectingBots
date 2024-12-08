@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    [SerializeField] private ResourceScanner _scaner;
-    [SerializeField] private ParticleSystemRenderer _effect;
+    [SerializeField] private Scanner _scaner;
     [SerializeField] private UnitDirector _unitDirector;
     [SerializeField] private float _waitScaningValue = 5;
     [SerializeField] private WaitForSecondsRealtime _wait;
+    [SerializeField] private ParticleSystemRenderer _effect;
+
     private Coroutine _coroutine;
 
     private void Start()
@@ -19,16 +20,17 @@ public class Base : MonoBehaviour
             _coroutine = StartCoroutine(GetResoursePositions());
     }
 
-    private void TryGetOrder(Queue<Transform> targets)
+    private void TryGetOrder(List<Resource> targets)
     {
-        _unitDirector.SetOrder(targets);
+        if (targets.Count > 0)
+            _unitDirector.SetOrder(targets);
     }
 
     private IEnumerator GetResoursePositions()
     {
         while (enabled)
         {
-            Queue<Transform> targets = _scaner.Scanning();
+            List<Resource> targets = _scaner.Scanning();
             TryGetOrder(targets);
             Instantiate(_effect, transform.position, transform.rotation);
 

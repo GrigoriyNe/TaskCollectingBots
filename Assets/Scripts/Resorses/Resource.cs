@@ -1,26 +1,22 @@
 using UnityEngine;
 
-[RequireComponent (typeof(Rigidbody))]
 public class Resource : SpawnerableObject
 {
-    private Rigidbody _rigidboby;
 
     private void Start()
     {
-        _rigidboby = GetComponent<Rigidbody>();
     }
 
-    public void Taked(Unit unit)
+    public void Taked(Transform parent)
     {
-        _rigidboby.isKinematic = true;
-        transform.SetParent(unit.transform);
-        transform.position = unit.transform.position;
+        transform.SetParent(parent);
+        transform.position = parent.position;
     }
 
     public void Throw()
     {
-        _rigidboby.isKinematic = false;
-        transform.SetParent(null);
+        gameObject.SetActive(false);
+        transform.position = Vector3.zero;
         Return();
     }
 }

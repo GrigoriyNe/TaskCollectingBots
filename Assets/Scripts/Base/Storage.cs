@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseStorage : MonoBehaviour
+public class Storage : MonoBehaviour
 {
     [SerializeField] private List<Unit> _units;
-    [SerializeField] private BaseStorageView _viewResource;
+    [SerializeField] private StorageView _viewResource;
 
     private int _woodCounter = 0;
     private int _metalCounter = 0;
@@ -22,27 +22,27 @@ public class BaseStorage : MonoBehaviour
 
     private void OnCollect(Resource resource)
     {
-        if (resource.TryGetComponent(out Wood _))
+        if (resource is Wood)
         {
             _woodCounter++;
             _viewResource.ChangeViewWood(_woodCounter);
         }
-        else if (resource.TryGetComponent(out Metal _))
+        else if (resource is Metal)
         {
             _metalCounter++;
             _viewResource.ChangeViewMetal(_metalCounter);
         }
-        else if (resource.TryGetComponent(out Bullet _))
+        else if (resource is Bullet)
         {
             _bulletCounter++;
             _viewResource.ChangeViewBullet(_bulletCounter);
         }
-        else if (resource.TryGetComponent(out Money _))
+        else if (resource is Money)
         {
             _moneyCounter++;
             _viewResource.ChangeViewMoney(_moneyCounter);
         }
-        else if (resource.TryGetComponent(out Weapon _))
+        else if (resource is Weapon)
         {
             _weaponCounter++;
             _viewResource.ChangeViewWeapon(_weaponCounter);

@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-public class BaseStorageView : MonoBehaviour
+public class StorageView : MonoBehaviour
 {
     const string Wood = "Wood: ";
     const string Metal = "Metal: ";

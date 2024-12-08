@@ -7,10 +7,8 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
     [SerializeField] private float _delay;
     [SerializeField] private int _maxItem = 10;
     [SerializeField] private int _startItem = 3;
-
-    private int _itemCounter = 0;
-    private float _minRandomValueSpawnPoint = -10;
-    private float _maxRandomValueSpawnPoint = 10;
+    [SerializeField] private float _minRandomValueSpawnPoint = -10;
+    [SerializeField] private float _maxRandomValueSpawnPoint = 10;
 
     private Coroutine _coroutine;
 
@@ -32,11 +30,12 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
 
     protected Vector3 GetRandomSpawnPoint()
     {
-        float randomValueSpawn = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);
+        float randomValueSpawnX = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);
+        float randomValueSpawnY = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);
 
-        Vector3 randomSpawnPosition = new Vector3(transform.position.x + randomValueSpawn,
+        Vector3 randomSpawnPosition = new Vector3(transform.position.x + randomValueSpawnX,
             transform.position.y,
-            transform.position.z + randomValueSpawn);
+            transform.position.z + randomValueSpawnY);
 
         return randomSpawnPosition;
     }
@@ -54,11 +53,10 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
     {
         WaitForSeconds wait = new WaitForSeconds(_delay);
 
-        while (_itemCounter <= _maxItem)
+        while (Pool.ActiveItems <= _maxItem)
         {
             Spawn();
             yield return wait;
         }
     }
-
 }

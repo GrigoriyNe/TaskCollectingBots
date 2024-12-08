@@ -4,10 +4,12 @@ using UnityEngine;
 public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 {
     [SerializeField] protected Transform Container;
-    [SerializeField] private PrefabsList _prefabs;
+    [SerializeField] private SpawnerableObject _prefab;
 
     protected Queue<T> Pool;
     protected int InitCreateValue = 1;
+
+    public int ActiveItems {get; private set; }
 
     private void Awake()
     {
@@ -17,11 +19,11 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
     public void Reset()
     {
         Pool.Clear();
-        EnqueueContainer();
     }
 
     public SpawnerableObject GetObject()
     {
+        ActiveItems++;
         return CreateObject();
     }
 
@@ -46,9 +48,9 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
     protected void PutObject(SpawnerableObject item)
     {
         item.Returned -= PutObject;
-        item.gameObject.SetActive(false);
+        item.transform.SetParent(null);
         Pool.Enqueue(item as T);
-        item.transform.parent = Container;
+        ActiveItems--;
     }
 
     protected void Activate(SpawnerableObject item)
@@ -57,24 +59,11 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         item.gameObject.SetActive(true);
     }
 
-    protected void EnqueueContainer()
-    {
-        for (int i = 0; i < Container.childCount; i++)
-        {
-            var putableItem = Container.GetChild(i).gameObject;
-
-            if (putableItem.TryGetComponent(out SpawnerableObject item))
-                PutObject(item);
-        }
-    }
 
     private SpawnerableObject Init()
     {
-        SpawnerableObject item = Instantiate(_prefabs.Get());
-        item.transform.parent = Container;
+        SpawnerableObject item = Instantiate(_prefab);
 
         return item;
     }
-
-
 }
