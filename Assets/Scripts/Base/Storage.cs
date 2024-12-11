@@ -16,11 +16,11 @@ public class Storage : MonoBehaviour
     {
         foreach (Unit unit in _units)
         {
-            unit.IsCollect += OnCollect;
+            unit.Collected += OnCollect;
         }
     }
 
-    private void OnCollect(Resource resource)
+    private void OnCollect(Resource resource, Unit _)
     {
         if (resource is Wood)
         {

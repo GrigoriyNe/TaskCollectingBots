@@ -2,11 +2,6 @@ using UnityEngine;
 
 public class Resource : SpawnerableObject
 {
-
-    private void Start()
-    {
-    }
-
     public void Taked(Transform parent)
     {
         transform.SetParent(parent);
@@ -15,8 +10,8 @@ public class Resource : SpawnerableObject
 
     public void Throw()
     {
-        gameObject.SetActive(false);
         transform.position = Vector3.zero;
+        gameObject.SetActive(false);
         Return();
     }
 }

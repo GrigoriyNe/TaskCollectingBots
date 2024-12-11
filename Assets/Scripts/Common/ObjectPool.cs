@@ -47,8 +47,8 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 
     protected void PutObject(SpawnerableObject item)
     {
+        item.transform.SetParent(Container);
         item.Returned -= PutObject;
-        item.transform.SetParent(null);
         Pool.Enqueue(item as T);
         ActiveItems--;
     }
@@ -56,14 +56,12 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
     protected void Activate(SpawnerableObject item)
     {
         item.Returned += PutObject;
+        item.transform.SetParent(null);
         item.gameObject.SetActive(true);
     }
 
-
     private SpawnerableObject Init()
     {
-        SpawnerableObject item = Instantiate(_prefab);
-
-        return item;
+        return Instantiate(_prefab);
     }
 }

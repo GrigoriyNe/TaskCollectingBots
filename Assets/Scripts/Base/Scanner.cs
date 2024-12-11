@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Scanner : MonoBehaviour
@@ -23,12 +24,8 @@ public class Scanner : MonoBehaviour
                     }
                 }
             }
+        }
 
-            return _resources;
-        }
-        else
-        {
-            return null;
-        }
+        return _resources;
     }
 }

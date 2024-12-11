@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitDirector : MonoBehaviour
@@ -7,14 +7,15 @@ public class UnitDirector : MonoBehaviour
     [SerializeField] private List<Unit> _units;
 
     private List<Unit> _freeUnits = new List<Unit>();
-    private List<Resource> _oderedResouce = new List<Resource>();
-    private List<Resource> _freeResouce = new List<Resource>();
+    private List<Resource> _tasks = new List<Resource>();
+
+    private Coroutine _coroutine = null;
 
     private void OnEnable()
     {
         foreach (Unit unit in _units)
         {
-            unit.IsCollect += OnFreeUnit;
+            unit.Collected += OnFreeUnit;
 
             if (unit.IsBisy == false)
             {
@@ -25,69 +26,61 @@ public class UnitDirector : MonoBehaviour
 
     public void SetOrder(List<Resource> _newResources)
     {
+        _tasks = _newResources;
+
         if (_freeUnits.Count == 0)
             return;
 
-        if(_freeUnits.Count == _units.Count)
-            _oderedResouce.Clear();
 
-        if (_oderedResouce.Count == 0)
-        {
-            _freeResouce = _newResources;
-        }
-        else
-        {
-            if (_freeResouce.Count == 0)
-            {
-                foreach (Resource oldTask in _oderedResouce.ToList<Resource>())
-                {
-                    foreach (Resource newTask in _newResources.ToList<Resource>())
-                    {
-                        if (newTask == oldTask)
-                        {
-                            _newResources.Remove(newTask);
-                        }
-                        if (newTask.transform.position == Vector3.zero)
-                        {
-                            _newResources.Remove(newTask);
-                        }
-                    }
-                }
-
-                _freeResouce = _newResources;
-            }
-        }
-
-        if (_freeResouce.Count > 0)
+        if (_tasks.Count > 0)
             GetOrders();
     }
 
     private void GetOrders()
     {
-        if (_freeResouce.Count == 0)
-            return;
-
         foreach (Unit unit in _freeUnits)
         {
-            if (unit != null)
+            if (_tasks.Count > 0)
             {
-                if (_freeResouce.Count > 0)
-                {
-                    Resource resource = _freeResouce[Random.Range(0, _freeResouce.Count)];
-                    _oderedResouce.Add(resource);
-                    _freeResouce.Remove(resource);
-                    unit.TakeOrder(resource);
-                }
+                Resource resource = _tasks[Random.Range(0, _tasks.Count)];
+                _tasks.Remove(resource);
+                unit.TakeOrder(resource);
+            }
+            else
+            {
+                StartCoroutine(GetOderFreeUnit(unit));
             }
         }
     }
 
-    private void OnFreeUnit(Resource resource)
+    private void GetOrders(Unit unit)
     {
-        if (_freeResouce.Count > 0)
+        if (_tasks.Count > 0)
         {
-            GetOrders();
-            _oderedResouce.Remove(resource);
+            Resource resource = _tasks[Random.Range(0, _tasks.Count)];
+            _tasks.Remove(resource);
+            unit.TakeOrder(resource);
         }
+        else
+        {
+            StartCoroutine(GetOderFreeUnit(unit));
+        }
+    }
+
+    private void OnFreeUnit(Resource resource, Unit unit)
+    {
+        if (_tasks.Count > 0)
+        {
+            if (_coroutine == null)
+                StartCoroutine(GetOderFreeUnit(unit));
+        }
+    }
+
+    private IEnumerator GetOderFreeUnit(Unit unit)
+    {
+        yield return new WaitForSecondsRealtime(.1f);
+
+        GetOrders(unit);
+        _coroutine = null;
     }
 }
