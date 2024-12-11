@@ -16,11 +16,6 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         Pool = new Queue<T>();
     }
 
-    public void Reset()
-    {
-        Pool.Clear();
-    }
-
     public SpawnerableObject GetObject()
     {
         ActiveItems++;
@@ -45,7 +40,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         return item;
     }
 
-    protected void PutObject(SpawnerableObject item)
+    private void PutObject(SpawnerableObject item)
     {
         item.transform.SetParent(Container);
         item.Returned -= PutObject;
@@ -53,7 +48,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         ActiveItems--;
     }
 
-    protected void Activate(SpawnerableObject item)
+    private void Activate(SpawnerableObject item)
     {
         item.Returned += PutObject;
         item.transform.SetParent(null);

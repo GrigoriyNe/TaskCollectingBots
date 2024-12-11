@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
     [SerializeField] private float _radius = 50;
 
-    private List<Resource> _resources = new List<Resource>();
-
     public List<Resource> Scanning()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, _radius);
+        List<Resource> _resources = new List<Resource>();
 
         if (hits.Length > 0)
         {

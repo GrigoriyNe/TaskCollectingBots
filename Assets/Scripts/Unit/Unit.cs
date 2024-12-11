@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
+using static UnityEngine.GraphicsBuffer;
 
 public class Unit : MonoBehaviour
 {
@@ -25,7 +25,7 @@ public class Unit : MonoBehaviour
         if (other.gameObject.activeSelf == false)
             return;
 
-        if (other.TryGetComponent(out Resource resource) && _isTakedResource == false )
+        if (other.TryGetComponent(out Resource resource) && _isTakedResource == false)
         {
             if (transform.position == resource.transform.position && _target.transform.parent == null)
             {
@@ -37,12 +37,12 @@ public class Unit : MonoBehaviour
         }
         else if (other.TryGetComponent(out Base _) && _isTakedResource)
         {
+            _base.RemoveOderedResoursce(_target);
             _target.Throw();
             _isTakedResource = false;
-            StopCoroutine(GoToBase());
             _coroutine = null;
-            Collected?.Invoke(_target, this);
             _isBisy = false;
+            Collected?.Invoke(_target, this);
         }
     }
 
@@ -52,6 +52,7 @@ public class Unit : MonoBehaviour
         {
             _target = target;
             _isBisy = true;
+            _base.AddOderedResouce(target);
 
             _coroutine = null;
             _coroutine = StartCoroutine(GoToResource());

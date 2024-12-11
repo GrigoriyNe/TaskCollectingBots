@@ -7,7 +7,7 @@ public class UnitDirector : MonoBehaviour
     [SerializeField] private List<Unit> _units;
 
     private List<Unit> _freeUnits = new List<Unit>();
-    private List<Resource> _tasks = new List<Resource>();
+    private List<Resource> _resources = new List<Resource>();
 
     private Coroutine _coroutine = null;
 
@@ -26,13 +26,14 @@ public class UnitDirector : MonoBehaviour
 
     public void SetOrder(List<Resource> _newResources)
     {
-        _tasks = _newResources;
+        if (_resources.Count < _units.Count)
+            _resources = _newResources;
 
         if (_freeUnits.Count == 0)
             return;
 
 
-        if (_tasks.Count > 0)
+        if (_resources.Count > 0)
             GetOrders();
     }
 
@@ -40,39 +41,29 @@ public class UnitDirector : MonoBehaviour
     {
         foreach (Unit unit in _freeUnits)
         {
-            if (_tasks.Count > 0)
+            if (unit.IsBisy == false)
             {
-                Resource resource = _tasks[Random.Range(0, _tasks.Count)];
-                _tasks.Remove(resource);
-                unit.TakeOrder(resource);
+                GetOrders(unit);
             }
-            else
-            {
-                StartCoroutine(GetOderFreeUnit(unit));
-            }
+            
         }
     }
 
     private void GetOrders(Unit unit)
     {
-        if (_tasks.Count > 0)
+        if (_resources.Count > 0)
         {
-            Resource resource = _tasks[Random.Range(0, _tasks.Count)];
-            _tasks.Remove(resource);
+            Resource resource = _resources[Random.Range(0, _resources.Count)];
+            _resources.Remove(resource);
             unit.TakeOrder(resource);
-        }
-        else
-        {
-            StartCoroutine(GetOderFreeUnit(unit));
         }
     }
 
     private void OnFreeUnit(Resource resource, Unit unit)
     {
-        if (_tasks.Count > 0)
+        if (_resources.Count > 0)
         {
-            if (_coroutine == null)
-                StartCoroutine(GetOderFreeUnit(unit));
+            StartCoroutine(GetOderFreeUnit(unit));
         }
     }
 
@@ -81,6 +72,5 @@ public class UnitDirector : MonoBehaviour
         yield return new WaitForSecondsRealtime(.1f);
 
         GetOrders(unit);
-        _coroutine = null;
     }
 }
