@@ -28,7 +28,7 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
         _coroutine = null;
     }
 
-    protected Vector3 GetRandomSpawnPoint()
+    private Vector3 GetRandomSpawnPoint()
     {
         float randomValueSpawnX = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);
         float randomValueSpawnY = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 {
-    [SerializeField] protected Transform Container;
-    [SerializeField] private SpawnerableObject _prefab;
+    [SerializeField] private Transform Container;
+    [SerializeField] private T _prefab;
 
     protected Queue<T> Pool;
     protected int InitCreateValue = 1;

@@ -32,7 +32,6 @@ public class UnitDirector : MonoBehaviour
         if (_freeUnits.Count == 0)
             return;
 
-
         if (_resources.Count > 0)
             GetOrders();
     }
@@ -43,13 +42,12 @@ public class UnitDirector : MonoBehaviour
         {
             if (unit.IsBisy == false)
             {
-                GetOrders(unit);
+                GetOrder(unit);
             }
-            
         }
     }
 
-    private void GetOrders(Unit unit)
+    private void GetOrder(Unit unit)
     {
         if (_resources.Count > 0)
         {
@@ -71,6 +69,6 @@ public class UnitDirector : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(.1f);
 
-        GetOrders(unit);
+        GetOrder(unit);
     }
 }

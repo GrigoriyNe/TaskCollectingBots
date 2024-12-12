@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Base : MonoBehaviour
@@ -21,7 +20,7 @@ public class Base : MonoBehaviour
         _wait = new WaitForSeconds(_waitScaningValue);
 
         if (_coroutine == null)
-            _coroutine = StartCoroutine(GetResoursePositions());
+            _coroutine = StartCoroutine(GatherResources());
     }
 
     public void RemoveOderedResoursce(Resource resource)
@@ -34,35 +33,32 @@ public class Base : MonoBehaviour
         _oderedResouce.Add(resource);
     }
 
-    private void TryGetOrder(List<Resource> targets)
-    {
-        if (targets.Count > 0)
-            _unitDirector.SetOrder(targets);
-    }
-
-    private IEnumerator GetResoursePositions()
+    private IEnumerator GatherResources()
     {
         while (enabled)
         {
-            _newResouces = _scaner.Scanning();
-            _oderedResouce.ForEach(item => _newResouces.Remove(item));
-
-            //foreach (Resource target in _newResouces.ToList<Resource>())
-            //{
-            //    foreach (Resource oldTarget in _oderedResouce.ToList<Resource>())
-            //    {
-            //        if (target.GetInstanceID() == oldTarget.GetInstanceID())
-            //        {
-            //            _newResouces.Remove(target);
-            //        }
-
-            //    }
-            //}
-
+            GetResources();
+            SortResources();
             TryGetOrder(_newResouces);
             Instantiate(_effect, transform.position, transform.rotation);
 
             yield return _wait;
         }
+    }
+
+    private void GetResources()
+    {
+        _newResouces = _scaner.Scan();
+    }
+    
+    private void SortResources()
+    {
+        _oderedResouce.ForEach(item => _newResouces.Remove(item));
+    }
+
+    private void TryGetOrder(List<Resource> targets)
+    {
+        if (targets.Count > 0)
+            _unitDirector.SetOrder(targets);
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Unit : MonoBehaviour
 {
@@ -9,7 +8,6 @@ public class Unit : MonoBehaviour
     [SerializeField] private float _speed = 3;
     [SerializeField] private PointTake _takePosition;
 
-    private WaitForSecondsRealtime _wait;
     private Coroutine _coroutine;
     private Resource _target;
 
@@ -27,7 +25,7 @@ public class Unit : MonoBehaviour
 
         if (other.TryGetComponent(out Resource resource) && _isTakedResource == false)
         {
-            if (transform.position == resource.transform.position && _target.transform.parent == null)
+            if (transform.position == resource.transform.position)
             {
                 _isTakedResource = true;
                 _target.Taked(_takePosition.transform);
@@ -48,7 +46,7 @@ public class Unit : MonoBehaviour
 
     public void TakeOrder(Resource target)
     {
-        if (_isBisy == false && target.transform.parent == null && target.transform.position != Vector3.zero)
+        if (_isBisy == false)
         {
             _target = target;
             _isBisy = true;
@@ -63,16 +61,7 @@ public class Unit : MonoBehaviour
     {
         while (transform.position != _target.transform.position)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
-            transform.LookAt(_target.transform.position);
-
-            //if (_target.transform.position == Vector3.zero || _target.transform.parent != null)
-            //{
-            //    _isBisy = false;
-            //    _target = null;
-            //    StopCoroutine(GoToResource());
-            //    _coroutine = null;
-            //}
+            MoveTo(_target.transform.position);
 
             yield return null;
         }
@@ -82,10 +71,15 @@ public class Unit : MonoBehaviour
     {
         while (_isTakedResource)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _base.transform.position, _speed * Time.deltaTime);
-            transform.LookAt(_base.transform.position);
+            MoveTo(_base.transform.position);
 
             yield return null;
         }
+    }
+
+    private void MoveTo(Vector3 target)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, target, _speed * Time.deltaTime);
+        transform.LookAt(target);
     }
 }
