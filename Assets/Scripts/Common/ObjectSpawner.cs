@@ -9,18 +9,23 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
     [SerializeField] private int _startItem = 3;
     [SerializeField] private float _minRandomValueSpawnPoint = -10;
     [SerializeField] private float _maxRandomValueSpawnPoint = 10;
+    [SerializeField] private Transform _container;
 
     private Coroutine _coroutine;
+    private WaitForSeconds _wait;
+    private int _activeItems;
 
     private void Start()
     {
+        _wait = new WaitForSeconds(_delay);
+
         for (int i = 0; i < _startItem; i++)
         {
             Spawn();
         }
 
         if (_coroutine == null)
-            _coroutine = StartCoroutine(GenerateObject());
+            _coroutine = StartCoroutine(GenerateItem());
     }
 
     private void OnDisable()
@@ -28,6 +33,26 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
         _coroutine = null;
     }
 
+    public void PutItem(SpawnerableObject item)
+    {
+        item.transform.SetParent(_container);
+        item.Returned -= PutItem;
+        Pool.ReturnItem(item as T);
+        _activeItems--;
+    }
+
+    private void Spawn()
+    {
+        var item = Pool.GetItem();
+
+        Vector3 randomSpawnPosition = GetRandomSpawnPoint();
+        item.transform.position = randomSpawnPosition;
+        item.gameObject.SetActive(true);
+        item.Returned += PutItem;
+        _activeItems++;
+    }
+
+    
     private Vector3 GetRandomSpawnPoint()
     {
         float randomValueSpawnX = Random.Range(_minRandomValueSpawnPoint, _maxRandomValueSpawnPoint);
@@ -40,23 +65,12 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
         return randomSpawnPosition;
     }
 
-    private void Spawn()
+    private IEnumerator GenerateItem()
     {
-        var item = Pool.GetObject();
-
-        Vector3 randomSpawnPosition = GetRandomSpawnPoint();
-        item.transform.position = randomSpawnPosition;
-        item.gameObject.SetActive(true);
-    }
-
-    private IEnumerator GenerateObject()
-    {
-        WaitForSeconds wait = new WaitForSeconds(_delay);
-
-        while (Pool.ActiveItems <= _maxItem)
+        while (_activeItems <= _maxItem)
         {
             Spawn();
-            yield return wait;
+            yield return _wait;
         }
     }
 }

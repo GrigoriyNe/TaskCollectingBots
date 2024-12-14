@@ -6,21 +6,22 @@ public class Base : MonoBehaviour
 {
     [SerializeField] private Scanner _scaner;
     [SerializeField] private UnitDirector _unitDirector;
+    [SerializeField] private ShowEffector _effector;
     [SerializeField] private float _waitScaningValue = 5f;
-    [SerializeField] private ParticleSystemRenderer _effect;
+    
 
     private WaitForSeconds _wait;
     private List<Resource> _oderedResouce = new List<Resource>();
     private List<Resource> _newResouces = new List<Resource>();
 
-    private Coroutine _coroutine;
+    private void Awake()
+    {
+        _wait = new WaitForSeconds(_waitScaningValue);
+    }
 
     private void Start()
     {
-        _wait = new WaitForSeconds(_waitScaningValue);
-
-        if (_coroutine == null)
-            _coroutine = StartCoroutine(GatherResources());
+        StartCoroutine(GatherResources());
     }
 
     public void RemoveOderedResoursce(Resource resource)
@@ -40,7 +41,7 @@ public class Base : MonoBehaviour
             GetResources();
             SortResources();
             TryGetOrder(_newResouces);
-            Instantiate(_effect, transform.position, transform.rotation);
+            _effector.ShowEffect();
 
             yield return _wait;
         }

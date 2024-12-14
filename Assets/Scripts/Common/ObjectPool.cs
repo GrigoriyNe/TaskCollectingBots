@@ -3,32 +3,32 @@ using UnityEngine;
 
 public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
 {
-    [SerializeField] private Transform Container;
     [SerializeField] private T _prefab;
 
-    protected Queue<T> Pool;
-    protected int InitCreateValue = 1;
-
-    public int ActiveItems {get; private set; }
+    private Queue<T> Pool;
 
     private void Awake()
     {
         Pool = new Queue<T>();
     }
 
-    public SpawnerableObject GetObject()
+    public SpawnerableObject GetItem()
     {
-        ActiveItems++;
         return CreateObject();
+    }
+
+    public void ReturnItem(T item)
+    {
+        Pool.Enqueue(item);
     }
 
     private SpawnerableObject CreateObject()
     {
         SpawnerableObject item;
 
-        if (Pool.Count < InitCreateValue)
+        if (Pool.Count == 0)
         {
-            item = Init();
+            item = Instantiate(_prefab);
             Activate(item);
 
             return item;
@@ -40,23 +40,9 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         return item;
     }
 
-    private void PutObject(SpawnerableObject item)
-    {
-        item.transform.SetParent(Container);
-        item.Returned -= PutObject;
-        Pool.Enqueue(item as T);
-        ActiveItems--;
-    }
-
     private void Activate(SpawnerableObject item)
     {
-        item.Returned += PutObject;
         item.transform.SetParent(null);
         item.gameObject.SetActive(true);
-    }
-
-    private SpawnerableObject Init()
-    {
-        return Instantiate(_prefab);
     }
 }
