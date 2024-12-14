@@ -12,7 +12,7 @@ public class Unit : MonoBehaviour
     private Treasure _target;
 
     private bool _isBusy = false;
-    private bool _isResourceTaked = false;
+    private bool _isTreasureTaked = false;
 
     public bool IsBisy => _isBusy;
 
@@ -24,7 +24,7 @@ public class Unit : MonoBehaviour
         {
             _target = target;
             _isBusy = true;
-            _base.AddOderedResouce(target);
+            _base.AddOderedTreasures(target);
 
             _moving = null;
             _moving = StartCoroutine(MoveTo(_target.transform.position));
@@ -47,18 +47,18 @@ public class Unit : MonoBehaviour
 
     private void CheckPosition()
     {
-        if (transform.position == _target.transform.position && _isResourceTaked == false)
+        if (transform.position == _target.transform.position && _isTreasureTaked == false)
         {
-            _isResourceTaked = true;
+            _isTreasureTaked = true;
             _target.Take(_holder.transform);
             StopCoroutine(_moving);
             _moving = StartCoroutine(MoveTo(_base.transform.position));
         }
-        else if (transform.position == _base.transform.position && _isResourceTaked)
+        else if (transform.position == _base.transform.position && _isTreasureTaked)
         {
-            _base.RemoveOderedResoursce(_target);
+            _base.RemoveOderedTreasures(_target);
             _target.Throw();
-            _isResourceTaked = false;
+            _isTreasureTaked = false;
             StopCoroutine(_moving);
             _isBusy = false;
             Collected?.Invoke(_target, this);

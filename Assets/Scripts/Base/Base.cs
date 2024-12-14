@@ -9,10 +9,9 @@ public class Base : MonoBehaviour
     [SerializeField] private ShowEffector _effector;
     [SerializeField] private float _waitScaningValue = 5f;
     
-
     private WaitForSeconds _wait;
-    private List<Treasure> _oderedResouce = new List<Treasure>();
-    private List<Treasure> _newResouces = new List<Treasure>();
+    private List<Treasure> _oderedTreasures = new List<Treasure>();
+    private List<Treasure> _newTreasures = new List<Treasure>();
 
     private void Awake()
     {
@@ -21,40 +20,40 @@ public class Base : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(GatherResources());
+        StartCoroutine(GatherTreasures());
     }
 
-    public void RemoveOderedResoursce(Treasure resource)
+    public void RemoveOderedTreasures(Treasure treasures)
     {
-        _oderedResouce.Remove(resource);
+        _oderedTreasures.Remove(treasures);
     }
 
-    public void AddOderedResouce(Treasure resource)
+    public void AddOderedTreasures(Treasure treasure)
     {
-        _oderedResouce.Add(resource);
+        _oderedTreasures.Add(treasure);
     }
 
-    private IEnumerator GatherResources()
+    private IEnumerator GatherTreasures()
     {
         while (enabled)
         {
-            SetResources();
-            SortResources();
-            TrySetOrder(_newResouces);
+            SetTreasures();
+            SortTreasures();
+            TrySetOrder(_newTreasures);
             _effector.ShowEffect();
 
             yield return _wait;
         }
     }
 
-    private void SetResources()
+    private void SetTreasures()
     {
-        _newResouces = _scaner.Scan();
+        _newTreasures = _scaner.Scan();
     }
     
-    private void SortResources()
+    private void SortTreasures()
     {
-        _oderedResouce.ForEach(item => _newResouces.Remove(item));
+        _oderedTreasures.ForEach(item => _newTreasures.Remove(item));
     }
 
     private void TrySetOrder(List<Treasure> targets)

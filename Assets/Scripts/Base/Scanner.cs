@@ -8,16 +8,16 @@ public class Scanner : MonoBehaviour
     public List<Treasure> Scan()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, _radius);
-        List<Treasure> resources = new List<Treasure>();
+        List<Treasure> treasures = new List<Treasure>();
 
         foreach (Collider hit in hits)
         {
             if (hit.TryGetComponent(out Treasure item))
             {
-                resources.Add(item);
+                treasures.Add(item);
             }
         }
 
-        return resources;
+        return treasures;
     }
 }

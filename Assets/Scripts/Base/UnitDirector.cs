@@ -70,7 +70,7 @@ public class UnitDirector : MonoBehaviour
         }
     }
 
-    private void OnFreeUnit(Treasure resource, Unit unit)
+    private void OnFreeUnit(Treasure treasure, Unit unit)
     {
         if (_treasures.Count > 0)
         {
