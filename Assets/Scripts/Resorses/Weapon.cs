@@ -1,9 +1,9 @@
 ﻿
-public class Weapon : Resource
+public class Weapon : Treasure
 {
     public override void SetName()
     {
-        _name = "Weapon";
+        NameTreasure = "Weapon";
     }
 }
 

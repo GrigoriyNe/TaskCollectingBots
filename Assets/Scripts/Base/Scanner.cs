@@ -5,14 +5,14 @@ public class Scanner : MonoBehaviour
 {
     [SerializeField] private float _radius = 50;
 
-    public List<Resource> Scan()
+    public List<Treasure> Scan()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, _radius);
-        List<Resource> resources = new List<Resource>();
+        List<Treasure> resources = new List<Treasure>();
 
         foreach (Collider hit in hits)
         {
-            if (hit.TryGetComponent(out Resource item))
+            if (hit.TryGetComponent(out Treasure item))
             {
                 resources.Add(item);
             }

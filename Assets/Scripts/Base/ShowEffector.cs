@@ -1,13 +1,16 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ShowEffector : MonoBehaviour
 {
     [SerializeField] private ParticleSystemRenderer _effect;
 
+    private WaitForSeconds _wait;
+    private float _valueDelay = 2f;
+
     private void Awake()
     {
+        _wait = new WaitForSeconds(_valueDelay);
         _effect.gameObject.SetActive(false);
     }
 
@@ -19,7 +22,7 @@ public class ShowEffector : MonoBehaviour
 
     private IEnumerator Deactivate ()
     {
-        yield return new WaitForSeconds(2);
+        yield return _wait;
 
         _effect.gameObject.SetActive(false);
     }

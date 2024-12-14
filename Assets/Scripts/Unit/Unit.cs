@@ -5,25 +5,25 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     [SerializeField] private Base _base;
-    [SerializeField] private PointTake _takePosition;
+    [SerializeField] private TreasureHolder _holder;
     [SerializeField] private float _speed = 3;
 
     private Coroutine _moving;
-    private Resource _target;
+    private Treasure _target;
 
-    private bool _isBisy = false;
-    private bool _isTakedResource = false;
+    private bool _isBusy = false;
+    private bool _isResourceTaked = false;
 
-    public bool IsBisy => _isBisy;
+    public bool IsBisy => _isBusy;
 
-    public event Action<Resource, Unit> Collected;
+    public event Action<Treasure, Unit> Collected;
 
-    public void TakeOrder(Resource target)
+    public void TakeOrder(Treasure target)
     {
-        if (_isBisy == false)
+        if (_isBusy == false)
         {
             _target = target;
-            _isBisy = true;
+            _isBusy = true;
             _base.AddOderedResouce(target);
 
             _moving = null;
@@ -47,22 +47,20 @@ public class Unit : MonoBehaviour
 
     private void CheckPosition()
     {
-        if (transform.position == _target.transform.position
-            && _isTakedResource == false)
+        if (transform.position == _target.transform.position && _isResourceTaked == false)
         {
-            _isTakedResource = true;
-            _target.Take(_takePosition.transform);
+            _isResourceTaked = true;
+            _target.Take(_holder.transform);
             StopCoroutine(_moving);
             _moving = StartCoroutine(MoveTo(_base.transform.position));
         }
-        else if (transform.position == _base.transform.position
-            && _isTakedResource)
+        else if (transform.position == _base.transform.position && _isResourceTaked)
         {
             _base.RemoveOderedResoursce(_target);
             _target.Throw();
-            _isTakedResource = false;
+            _isResourceTaked = false;
             StopCoroutine(_moving);
-            _isBisy = false;
+            _isBusy = false;
             Collected?.Invoke(_target, this);
         }
     }

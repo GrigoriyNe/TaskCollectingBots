@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
+public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnableObject
 {
     [SerializeField] private T _prefab;
 
@@ -12,7 +12,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         Pool = new Queue<T>();
     }
 
-    public SpawnerableObject GetItem()
+    public SpawnableObject GetItem()
     {
         return CreateObject();
     }
@@ -22,9 +22,9 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         Pool.Enqueue(item);
     }
 
-    private SpawnerableObject CreateObject()
+    private SpawnableObject CreateObject()
     {
-        SpawnerableObject item;
+        SpawnableObject item;
 
         if (Pool.Count == 0)
         {
@@ -40,7 +40,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : SpawnerableObject
         return item;
     }
 
-    private void Activate(SpawnerableObject item)
+    private void Activate(SpawnableObject item)
     {
         item.transform.SetParent(null);
         item.gameObject.SetActive(true);

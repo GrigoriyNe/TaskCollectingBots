@@ -1,8 +1,8 @@
 ﻿
-public class Bullet : Resource
+public class Bullet : Treasure
 {
     public override void SetName()
     {
-        _name = "Bullets";
+        NameTreasure = "Bullets";
     }
 }

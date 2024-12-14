@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-public class SpawnerableObject : MonoBehaviour
+public class SpawnableObject : MonoBehaviour
 {
-    public event Action<SpawnerableObject> Returned;
+    public event Action<SpawnableObject> Returned;
 
     public void Return()
     {

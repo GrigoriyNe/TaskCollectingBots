@@ -1,10 +1,9 @@
 using UnityEngine;
 
-public abstract class Resource : SpawnerableObject
+public abstract class Treasure : SpawnableObject
 {
-    public string Name => _name;
-
-    protected string _name;
+    protected string NameTreasure;
+    public string Name => NameTreasure;
 
     public abstract void SetName();
 

@@ -1,7 +1,7 @@
-﻿public class Wood : Resource
+﻿public class Wood : Treasure
 {
     public override void SetName()
     {
-        _name = "Wood";
+        NameTreasure = "Wood";
     }
 }

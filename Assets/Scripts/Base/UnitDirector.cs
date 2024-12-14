@@ -9,7 +9,7 @@ public class UnitDirector : MonoBehaviour
     [SerializeField] private List<Unit> _units;
 
     private List<Unit> _freeUnits = new List<Unit>();
-    private List<Resource> _resources = new List<Resource>();
+    private List<Treasure> _treasures = new List<Treasure>();
 
     private float _delayValue = 0.1f;
     private WaitForSeconds _wait;
@@ -37,51 +37,51 @@ public class UnitDirector : MonoBehaviour
         }
     }
 
-    public void SetOrder(List<Resource> newResources)
+    public void SetOrder(List<Treasure> newTreasures)
     {
-        if (_resources.Count < _units.Count)
-            _resources = newResources;
+        if (_treasures.Count < _units.Count)
+            _treasures = newTreasures;
 
         if (_freeUnits.Count == 0)
             return;
 
-        if (_resources.Count > 0)
-            GetOrders();
+        if (_treasures.Count > 0)
+            ExecuteOrders();
     }
 
-    private void GetOrders()
+    private void ExecuteOrders()
     {
         foreach (Unit unit in _freeUnits)
         {
             if (unit.IsBisy == false)
             {
-                GetOrder(unit);
+                ExecuteOrders(unit);
             }
         }
     }
 
-    private void GetOrder(Unit unit)
+    private void ExecuteOrders(Unit unit)
     {
-        if (_resources.Count > 0)
+        if (_treasures.Count > 0)
         {
-            Resource resource = _resources[_resources.Count - OffsetEnumeration];
-            _resources.Remove(resource);
-            unit.TakeOrder(resource);
+            Treasure treasure = _treasures[_treasures.Count - OffsetEnumeration];
+            _treasures.Remove(treasure);
+            unit.TakeOrder(treasure);
         }
     }
 
-    private void OnFreeUnit(Resource resource, Unit unit)
+    private void OnFreeUnit(Treasure resource, Unit unit)
     {
-        if (_resources.Count > 0)
+        if (_treasures.Count > 0)
         {
-            StartCoroutine(GetOderFreeUnit(unit));
+            StartCoroutine(ExecuteOrderFreeUnit(unit));
         }
     }
 
-    private IEnumerator GetOderFreeUnit(Unit unit)
+    private IEnumerator ExecuteOrderFreeUnit(Unit unit)
     {
         yield return _wait;
 
-        GetOrder(unit);
+        ExecuteOrders(unit);
     }
 }

@@ -11,8 +11,8 @@ public class Base : MonoBehaviour
     
 
     private WaitForSeconds _wait;
-    private List<Resource> _oderedResouce = new List<Resource>();
-    private List<Resource> _newResouces = new List<Resource>();
+    private List<Treasure> _oderedResouce = new List<Treasure>();
+    private List<Treasure> _newResouces = new List<Treasure>();
 
     private void Awake()
     {
@@ -24,12 +24,12 @@ public class Base : MonoBehaviour
         StartCoroutine(GatherResources());
     }
 
-    public void RemoveOderedResoursce(Resource resource)
+    public void RemoveOderedResoursce(Treasure resource)
     {
         _oderedResouce.Remove(resource);
     }
 
-    public void AddOderedResouce(Resource resource)
+    public void AddOderedResouce(Treasure resource)
     {
         _oderedResouce.Add(resource);
     }
@@ -38,16 +38,16 @@ public class Base : MonoBehaviour
     {
         while (enabled)
         {
-            GetResources();
+            SetResources();
             SortResources();
-            TryGetOrder(_newResouces);
+            TrySetOrder(_newResouces);
             _effector.ShowEffect();
 
             yield return _wait;
         }
     }
 
-    private void GetResources()
+    private void SetResources()
     {
         _newResouces = _scaner.Scan();
     }
@@ -57,7 +57,7 @@ public class Base : MonoBehaviour
         _oderedResouce.ForEach(item => _newResouces.Remove(item));
     }
 
-    private void TryGetOrder(List<Resource> targets)
+    private void TrySetOrder(List<Treasure> targets)
     {
         if (targets.Count > 0)
             _unitDirector.SetOrder(targets);

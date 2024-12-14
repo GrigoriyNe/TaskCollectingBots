@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObject
+public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnableObject
 {
     [SerializeField] protected ObjectPool<T> Pool;
     [SerializeField] private float _delay;
@@ -33,7 +33,7 @@ public abstract class ObjectSpawner<T> : MonoBehaviour where T : SpawnerableObje
         _coroutine = null;
     }
 
-    public void PutItem(SpawnerableObject item)
+    public void PutItem(SpawnableObject item)
     {
         item.transform.SetParent(_container);
         item.Returned -= PutItem;
