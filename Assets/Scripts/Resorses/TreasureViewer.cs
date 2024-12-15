@@ -8,37 +8,34 @@ public class TreasureViewer : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _viewTextName;
     [SerializeField] private TextMeshProUGUI _viewCounter;
-    [SerializeField] private Treasure _treasure;
+    [SerializeField] private UnitDirector _director;
 
-    private void Awake()
+    private void Start()
     {
-        if (_viewTextName.text != _treasure.Name)
+        _viewCounter.text = "0";
+
+        foreach (Unit unit in _director.Units)
         {
-            _treasure.SetName();
-            ViewName();
+            unit.Collected += OnCollected;
         }
     }
 
-    private void OnEnable()
+    private void OnDisable()
     {
-        _treasure.Returned += OnReturn;
+        foreach (Unit unit in _director.Units)
+        {
+            unit.Collected -= OnCollected;
+        }
     }
 
-    private void OnDestroy()
+    private void OnCollected(Treasure treasure, Unit _)
     {
-        _treasure.Returned -= OnReturn;
-    }
+        if (_viewTextName.text.ToString() == treasure.Name.ToString())
+        {
+            int counter = Convert.ToInt32(_viewCounter.text.ToString());
+            counter++;
 
-    public void ViewName()
-    {
-        _viewTextName.text = _treasure.Name + SignsBetweenTexts;
-    }
-
-    private void OnReturn(SpawnableObject _)
-    {
-        int counter = Convert.ToInt32(_viewCounter.text.ToString());
-        counter++;
-
-        _viewCounter.text = counter.ToString();
+            _viewCounter.text = counter.ToString();
+        }
     }
 }

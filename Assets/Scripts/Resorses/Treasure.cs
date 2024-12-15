@@ -5,6 +5,11 @@ public abstract class Treasure : SpawnableObject
     protected string NameTreasure;
     public string Name => NameTreasure;
 
+    private void OnEnable()
+    {
+        SetName();
+    }
+
     public abstract void SetName();
 
     public void Take(Transform parent)

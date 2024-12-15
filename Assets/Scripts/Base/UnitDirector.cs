@@ -2,44 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 public class UnitDirector : MonoBehaviour
 {
     private const int OffsetEnumeration = 1;
 
-    //[SerializeField] private List<Unit> _units;
     [SerializeField] private BaseCrafter _crafer;
 
     private List<Treasure> _treasures = new List<Treasure>();
     private List<Unit> _units = new List<Unit>();
 
-    private float _delayValue = 0.1f;
-    private WaitForSeconds _wait;
+    private float _delayValue = 0.3f;
     private bool _needNewBase = false;
+    private WaitForSeconds _wait;
     private FlagNewBase _flag;
+
+    public List<Unit> Units => _units;
 
     private void OnEnable()
     {
         _wait = new WaitForSeconds(_delayValue);
-        _crafer.UnitCreated += OnUnitCreate;
+        _crafer.UnitCreated += OnUnitAdd;
     }
 
     private void OnDisable()
     {
-        _crafer.UnitCreated -= OnUnitCreate;
+        _crafer.UnitCreated -= OnUnitAdd;
 
         foreach (Unit unit in _units)
         {
             unit.Collected -= OnFreeUnit;
-        }
-    }
-
-    private void Start()
-    {
-        foreach (Unit unit in _units)
-        {
-            unit.Collected += OnFreeUnit;
         }
     }
 
@@ -57,9 +49,10 @@ public class UnitDirector : MonoBehaviour
         _flag = flag;
     }
 
-    public void OnUnitCreate(Unit unit)
+    public void OnUnitAdd(Unit unit)
     {
         _units.Add(unit);
+        unit.Collected += OnFreeUnit;
     }
 
     private void ExecuteOrders()
@@ -88,8 +81,9 @@ public class UnitDirector : MonoBehaviour
         if (_needNewBase)
         {
             unit.BildBase(_flag.transform.position);
-            _needNewBase = false;
+            unit.Collected -= OnFreeUnit;
             _units.Remove(unit);
+            _needNewBase = false;
         }
         else if (_treasures.Count > 0)
         {

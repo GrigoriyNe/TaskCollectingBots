@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
-    [SerializeField] private float _radius = 50;
+    [SerializeField] private float _radius;
+
+    public float Radius => _radius;
 
     public List<Treasure> Scan()
     {
@@ -14,7 +16,10 @@ public class Scanner : MonoBehaviour
         {
             if (hit.TryGetComponent(out Treasure item))
             {
-                treasures.Add(item);
+                if (item.transform.position.x < _radius)
+                {
+                    treasures.Add(item);
+                }
             }
         }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,17 +10,15 @@ public class Base : MonoBehaviour
     [SerializeField] private float _waitScaningValue = 5f;
     
     private WaitForSeconds _wait;
-    private List<Treasure> _oderedTreasures = new List<Treasure>();
-    private List<Treasure> _newTreasures = new List<Treasure>();
+    private List<Treasure> _oderedTreasures;
+    private List<Treasure> _newTreasures;
 
-    private void Awake()
-    {
-        _wait = new WaitForSeconds(_waitScaningValue);
-    }
-
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(GatherTreasures());
+        _wait = new WaitForSeconds(_waitScaningValue);
+        _oderedTreasures = new List<Treasure>();
+        _newTreasures = new List<Treasure>();
     }
 
     public void RemoveOderedTreasures(Treasure treasures)
@@ -38,12 +35,12 @@ public class Base : MonoBehaviour
     {
         while (enabled)
         {
+            yield return _wait;
+
             RecordTreasures();
             SortTreasures();
             SendOrders(_newTreasures);
             _effector.ShowEffect();
-
-            yield return _wait;
         }
     }
 
@@ -61,10 +58,5 @@ public class Base : MonoBehaviour
     {
         if (targets.Count > 0)
             _unitDirector.SetOrder(targets);
-    }
-
-    public void Added(Unit unit)
-    {
-        _unitDirector.OnUnitCreate(unit);
     }
 }

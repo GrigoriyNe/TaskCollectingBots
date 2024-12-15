@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour
     private bool _isBusy = false;
     private bool _isTreasureTaked = false;
     private bool _isBuilding = false;
+    private int _maxDistanse = 15;
 
     public bool IsBisy => _isBusy;
 
@@ -23,6 +24,9 @@ public class Unit : MonoBehaviour
 
     public void TakeOrder(Treasure target)
     {
+        if (transform.position.x - target.transform.position.x > _maxDistanse)
+            return;
+
         if (_isBusy == false)
         {
             _target = target;
@@ -31,14 +35,17 @@ public class Unit : MonoBehaviour
 
             _moving = null;
             _moving = StartCoroutine(MoveTo(_target.transform.position));
-
         }
     }
 
     public void RegistredBase(Base newBase)
     {
         _base = newBase;
-        newBase.Added(this);
+
+        if (newBase.TryGetComponent(out UnitDirector director))
+        {
+            director.OnUnitAdd(this);
+        }
     }
 
     public void BildBase(Vector3 newBase)
@@ -47,7 +54,7 @@ public class Unit : MonoBehaviour
         _isBuilding = true;
         _pointBuild = newBase;
         _moving = null;
-        _moving = StartCoroutine(MoveTo(newBase));
+        _moving = StartCoroutine(MoveTo(_pointBuild));
 
     }
 
@@ -84,11 +91,11 @@ public class Unit : MonoBehaviour
         }
         else if (transform.position == _pointBuild && _isBuilding)
         {
-            Base newBase  = Instantiate(_basePrefab, _pointBuild, transform.rotation);
-            RegistredBase(newBase);
+            Base newBase = Instantiate(_basePrefab, _pointBuild, transform.rotation);
+            StopCoroutine(_moving);
             _isBusy = false;
             _isBuilding = false;
-            StopCoroutine(_moving);
+            RegistredBase(newBase);
         }
     }
 }
