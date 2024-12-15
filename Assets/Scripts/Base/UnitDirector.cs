@@ -1,57 +1,70 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 public class UnitDirector : MonoBehaviour
 {
     private const int OffsetEnumeration = 1;
 
-    [SerializeField] private List<Unit> _units;
+    //[SerializeField] private List<Unit> _units;
+    [SerializeField] private BaseCrafter _crafer;
 
-    private List<Unit> _freeUnits = new List<Unit>();
     private List<Treasure> _treasures = new List<Treasure>();
+    private List<Unit> _units = new List<Unit>();
 
     private float _delayValue = 0.1f;
     private WaitForSeconds _wait;
+    private bool _needNewBase = false;
+    private FlagNewBase _flag;
 
     private void OnEnable()
     {
         _wait = new WaitForSeconds(_delayValue);
-
-        foreach (Unit unit in _units)
-        {
-            unit.Collected += OnFreeUnit;
-
-            if (unit.IsBisy == false)
-            {
-                _freeUnits.Add(unit);
-            }
-        }
+        _crafer.UnitCreated += OnUnitCreate;
     }
 
     private void OnDisable()
     {
+        _crafer.UnitCreated -= OnUnitCreate;
+
         foreach (Unit unit in _units)
         {
             unit.Collected -= OnFreeUnit;
         }
     }
 
+    private void Start()
+    {
+        foreach (Unit unit in _units)
+        {
+            unit.Collected += OnFreeUnit;
+        }
+    }
+
     public void SetOrder(List<Treasure> newTreasures)
     {
-        if (_treasures.Count < _units.Count)
-            _treasures = newTreasures;
-
-        if (_freeUnits.Count == 0)
-            return;
+        _treasures = newTreasures;
 
         if (_treasures.Count > 0)
             ExecuteOrders();
     }
 
+    public void BildBase(FlagNewBase flag)
+    {
+        _needNewBase = true;
+        _flag = flag;
+    }
+
+    public void OnUnitCreate(Unit unit)
+    {
+        _units.Add(unit);
+    }
+
     private void ExecuteOrders()
     {
-        foreach (Unit unit in _freeUnits)
+        foreach (Unit unit in _units)
         {
             if (unit.IsBisy == false)
             {
@@ -72,7 +85,13 @@ public class UnitDirector : MonoBehaviour
 
     private void OnFreeUnit(Treasure treasure, Unit unit)
     {
-        if (_treasures.Count > 0)
+        if (_needNewBase)
+        {
+            unit.BildBase(_flag.transform.position);
+            _needNewBase = false;
+            _units.Remove(unit);
+        }
+        else if (_treasures.Count > 0)
         {
             StartCoroutine(ExecuteOrderFreeUnit(unit));
         }

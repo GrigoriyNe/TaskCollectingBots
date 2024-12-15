@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,16 +38,16 @@ public class Base : MonoBehaviour
     {
         while (enabled)
         {
-            SetTreasures();
+            RecordTreasures();
             SortTreasures();
-            TrySetOrder(_newTreasures);
+            SendOrders(_newTreasures);
             _effector.ShowEffect();
 
             yield return _wait;
         }
     }
 
-    private void SetTreasures()
+    private void RecordTreasures()
     {
         _newTreasures = _scaner.Scan();
     }
@@ -56,9 +57,14 @@ public class Base : MonoBehaviour
         _oderedTreasures.ForEach(item => _newTreasures.Remove(item));
     }
 
-    private void TrySetOrder(List<Treasure> targets)
+    private void SendOrders(List<Treasure> targets)
     {
         if (targets.Count > 0)
             _unitDirector.SetOrder(targets);
+    }
+
+    public void Added(Unit unit)
+    {
+        _unitDirector.OnUnitCreate(unit);
     }
 }

@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    [SerializeField] private Base _base;
+    [SerializeField] private Base _basePrefab;
     [SerializeField] private TreasureHolder _holder;
     [SerializeField] private float _speed = 3;
 
+    private Base _base;
     private Coroutine _moving;
     private Treasure _target;
+    private Vector3 _pointBuild;
 
     private bool _isBusy = false;
     private bool _isTreasureTaked = false;
+    private bool _isBuilding = false;
 
     public bool IsBisy => _isBusy;
 
@@ -30,6 +33,22 @@ public class Unit : MonoBehaviour
             _moving = StartCoroutine(MoveTo(_target.transform.position));
 
         }
+    }
+
+    public void RegistredBase(Base newBase)
+    {
+        _base = newBase;
+        newBase.Added(this);
+    }
+
+    public void BildBase(Vector3 newBase)
+    {
+        _isBusy = true;
+        _isBuilding = true;
+        _pointBuild = newBase;
+        _moving = null;
+        _moving = StartCoroutine(MoveTo(newBase));
+
     }
 
     private IEnumerator MoveTo(Vector3 target)
@@ -62,6 +81,14 @@ public class Unit : MonoBehaviour
             StopCoroutine(_moving);
             _isBusy = false;
             Collected?.Invoke(_target, this);
+        }
+        else if (transform.position == _pointBuild && _isBuilding)
+        {
+            Base newBase  = Instantiate(_basePrefab, _pointBuild, transform.rotation);
+            RegistredBase(newBase);
+            _isBusy = false;
+            _isBuilding = false;
+            StopCoroutine(_moving);
         }
     }
 }
