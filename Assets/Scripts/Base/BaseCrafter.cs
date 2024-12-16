@@ -2,6 +2,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 public class BaseCrafter : MonoBehaviour
 {
@@ -12,24 +13,30 @@ public class BaseCrafter : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _counterMoney;
 
     [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private PlayerInputController _input;
     [SerializeField] private FlagNewBase _flag;
     [SerializeField] private UnitDirector _director;
     [SerializeField] private Scanner _scaner;
     [SerializeField] private int _startUnits;
 
+    private PlayerInputController _input;
     private int _treasuresForCreateUint = 3;
     private int _treasuresForCreateBase = 5;
     private bool _isNeedBildBase = false;
     private bool _isflagIsOver;
     private Coroutine _coroutine = null;
+    private WaitForSeconds _wait = new WaitForSeconds (3);
 
     public event Action<Unit> UnitCreated;
 
     private void OnEnable()
     {
-        _isflagIsOver = false;
-        _input.Clicked += CreateFlag;
+        GameObject player = GameObject.Find("Player");
+
+        if (player.TryGetComponent(out PlayerInputController input))
+        {
+            _input = input;
+            input.Clicked += CreateFlag;
+        }
 
         for (int i = 0; i < _startUnits; i++)
         {
@@ -47,40 +54,69 @@ public class BaseCrafter : MonoBehaviour
             _coroutine = StartCoroutine(CreateNewUnit());
     }
 
-    private void CreateFlag(Vector3 createPosition)
+    private void CreateFlag(RaycastHit createPosition)
     {
         if (_isflagIsOver)
             return;
 
-        //if (_base.transform.position.x - createPosition.x < _scaner.Radius * 2)
+        if (_director.Units.Count < 1)
+        {
+            StartCoroutine(WaitNewUnitForBild(createPosition));
+            return;
+        }
+
+        if (createPosition.transform.TryGetComponent(out Base selectedBase))
+        {
+            if (selectedBase == this.GetComponent<Base>())
+            {
+                _isNeedBildBase = true;
+                Debug.Log("Base Selected!");
+            }
+        }
+
+        if (_isNeedBildBase)
+        {
+            if (createPosition.transform.TryGetComponent(out Ground ground))
+            {
+                _flag.transform.position = createPosition.point;
+            }
+
+        }
+
+        //if (transform.position.x - createPosition.transform.position.x < _scaner.Radius / 2)
         //{
         //    Debug.Log("Too close");
         //    return;
         //}
 
-        _isNeedBildBase = true;
         _coroutine = null;
-        _flag.transform.position = createPosition;
+
 
         if (Convert.ToInt32(_counterWood.text.ToString()) >= _treasuresForCreateBase
-            && Convert.ToInt32(_counterMetal.text.ToString()) >= _treasuresForCreateBase
-            && Convert.ToInt32(_counterMoney.text.ToString()) >= _treasuresForCreateBase)
+            && Convert.ToInt32(_counterMetal.text.ToString()) >= _treasuresForCreateBase)
+         //   && Convert.ToInt32(_counterMoney.text.ToString()) >= _treasuresForCreateBase)
         {
             _director.BildBase(_flag);
             _isNeedBildBase = false;
 
             _counterWood.text = (Convert.ToInt32(_counterWood.text.ToString()) - _treasuresForCreateBase).ToString();
             _counterMetal.text = (Convert.ToInt32(_counterMetal.text.ToString()) - _treasuresForCreateBase).ToString();
-            _counterMoney.text = (Convert.ToInt32(_counterMoney.text.ToString()) - _treasuresForCreateBase).ToString();
+      //      _counterMoney.text = (Convert.ToInt32(_counterMoney.text.ToString()) - _treasuresForCreateBase).ToString();
 
             _isflagIsOver = true;
-            _flag.gameObject.SetActive(false);
-            //_input.Clicked -= CreateFlag;
+            // _input.Clicked -= CreateFlag;
         }
         else
         {
-            StartCoroutine(WaitTreasureForBase());
+            StartCoroutine(WaitTreasureForBildBase(createPosition));
         }
+    }
+
+    private IEnumerator WaitNewUnitForBild(RaycastHit createPosition)
+    {
+        yield return _wait;
+
+        CreateFlag(createPosition);
     }
 
     private IEnumerator CreateNewUnit()
@@ -104,10 +140,10 @@ public class BaseCrafter : MonoBehaviour
         UnitCreated?.Invoke(newUnit);
     }
 
-    private IEnumerator WaitTreasureForBase()
+    private IEnumerator WaitTreasureForBildBase(RaycastHit createPosition)
     {
         yield return new WaitForSeconds(5f);
 
-        CreateFlag(_flag.transform.position);
+        CreateFlag(createPosition);
     }
 }

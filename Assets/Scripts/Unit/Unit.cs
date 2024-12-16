@@ -91,7 +91,7 @@ public class Unit : MonoBehaviour
         }
         else if (transform.position == _pointBuild && _isBuilding)
         {
-            Base newBase = Instantiate(_basePrefab, _pointBuild, transform.rotation);
+            Base newBase = Instantiate(_basePrefab, _pointBuild, Quaternion.identity);
             StopCoroutine(_moving);
             _isBusy = false;
             _isBuilding = false;

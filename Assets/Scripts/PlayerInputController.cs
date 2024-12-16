@@ -9,35 +9,34 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private float _lookSpeed;
     [SerializeField] private Camera _camera;
 
-    private PlayerInput _inputActions;
+    private PlayerInput _input;
 
     private Vector2 _moveDirection;
     private Vector2 _lookDirection;
 
-    public event Action<Vector3> Clicked;
+    public event Action<RaycastHit> Clicked;
 
     private void Awake()
     {
-        _inputActions = new PlayerInput();
-
-        _inputActions.Player.Click.performed += OnClick;
+        _input = new PlayerInput();
     }
 
     private void OnEnable()
     {
-        _inputActions.Enable();
+        _input.Enable();
+        _input.Player.Click.performed += OnClick;
     }
 
     private void OnDisable()
     {
-        _inputActions.Disable();
+        _input.Disable();
 
     }
 
     private void Update()
     {
-        _moveDirection = _inputActions.Player.Move.ReadValue<Vector2>();
-        _lookDirection = _inputActions.Player.Look.ReadValue<Vector2>();
+        _moveDirection = _input.Player.Move.ReadValue<Vector2>();
+        _lookDirection = _input.Player.Look.ReadValue<Vector2>();
 
         Move();
         Look();
@@ -54,8 +53,12 @@ public class PlayerInputController : MonoBehaviour
 
             if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
             {
-                Clicked?.Invoke(hit.point);
+                Clicked?.Invoke(hit);//.point);
             }
+        }
+        if (context.canceled)
+        {
+            return;
         }
     }
 
