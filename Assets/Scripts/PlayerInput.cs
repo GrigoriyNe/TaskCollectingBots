@@ -40,9 +40,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""name"": ""Click"",
                     ""type"": ""Value"",
                     ""id"": ""d62d5b1e-559a-4c1c-952a-e9407927dc28"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold(duration=0.1,pressPoint=0.3)"",
                     ""initialStateCheck"": true
                 },
                 {
@@ -83,7 +83,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""id"": ""ac3dfa56-6b11-4d47-8edb-424564925616"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""AxisDeadzone"",
                     ""groups"": ""KeyboardMouse"",
                     ""action"": ""Click"",
                     ""isComposite"": false,

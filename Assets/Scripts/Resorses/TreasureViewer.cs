@@ -10,14 +10,9 @@ public class TreasureViewer : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _viewCounter;
     [SerializeField] private UnitDirector _director;
 
-    private void Start()
+    private void OnEnable()
     {
         _viewCounter.text = "0";
-
-        foreach (Unit unit in _director.Units)
-        {
-            unit.Collected += OnCollected;
-        }
     }
 
     private void OnDisable()
@@ -25,6 +20,14 @@ public class TreasureViewer : MonoBehaviour
         foreach (Unit unit in _director.Units)
         {
             unit.Collected -= OnCollected;
+        }
+    }
+
+    private void Start()
+    {
+        foreach (Unit unit in _director.Units)
+        {
+            unit.Collected += OnCollected;
         }
     }
 

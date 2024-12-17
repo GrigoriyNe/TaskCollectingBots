@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +13,10 @@ public class PlayerInputController : MonoBehaviour
 
     private Vector2 _moveDirection;
     private Vector2 _lookDirection;
+    private Vector2 _tapPoint;
+
+    private bool _moveShouldContinue;
+    private bool _moveHasStarted;
 
     public event Action<RaycastHit> Clicked;
 
@@ -24,13 +28,17 @@ public class PlayerInputController : MonoBehaviour
     private void OnEnable()
     {
         _input.Enable();
+        _input.Player.Click.started += OnClick;
         _input.Player.Click.performed += OnClick;
+        _input.Player.Click.canceled += OnClick;
     }
 
     private void OnDisable()
     {
         _input.Disable();
-
+        _input.Player.Click.started -= OnClick;
+        _input.Player.Click.performed -= OnClick;
+        _input.Player.Click.canceled -= OnClick;
     }
 
     private void Update()
@@ -44,33 +52,49 @@ public class PlayerInputController : MonoBehaviour
 
     public void OnClick(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            Vector3 tapPoint = context.ReadValue<Vector2>();
-
-            Ray castPoint = Camera.main.ScreenPointToRay(tapPoint);
-            RaycastHit hit;
-
-            if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
-            {
-                Clicked?.Invoke(hit);//.point);
-            }
-        }
         if (context.canceled)
         {
-            return;
+            _tapPoint = Vector2.zero;
+        }
+        else if (context.performed)
+        {
+            context.ReadValue<Vector2>();
+            _tapPoint = context.ReadValue<Vector2>();
+
+            if (_tapPoint != Vector2.zero)
+            {
+                Ray castPoint = Camera.main.ScreenPointToRay(_tapPoint);
+                RaycastHit hit;
+
+                if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                {
+                    Clicked?.Invoke(hit);
+                    context = new InputAction.CallbackContext();
+                }
+            }
         }
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    private void OnClickToMoveStarted(InputAction.CallbackContext context)
     {
-        _moveDirection = context.action.ReadValue<Vector2>();
+        // set the boolean flags when we click the mouse
+        _moveShouldContinue = true;
+        _moveHasStarted = false;
     }
 
-    public void OnLook(InputAction.CallbackContext context)
+    private void OnClickToMove(InputAction.CallbackContext context)
     {
-        _lookDirection = context.action.ReadValue<Vector2>();
+        // started to actually move
+        _moveHasStarted = true;
+        OnClick(context);
     }
+
+    private void OnClickToMoveCanceled(InputAction.CallbackContext context)
+    {
+        // we have released the mouse, so we should not continue movement
+        _moveShouldContinue = false;
+    }
+
 
     private void Move()
     {

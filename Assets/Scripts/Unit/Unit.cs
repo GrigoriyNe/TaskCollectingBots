@@ -65,6 +65,13 @@ public class Unit : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, target, _speed * Time.deltaTime);
             transform.LookAt(target);
 
+            //if (_target.transform.parent != null)
+            //{
+            //    _isTreasureTaked = false;
+            //    _isBusy = false;
+            //    _moving = null;
+            //}
+
             yield return null;
         }
 
@@ -91,7 +98,8 @@ public class Unit : MonoBehaviour
         }
         else if (transform.position == _pointBuild && _isBuilding)
         {
-            Base newBase = Instantiate(_basePrefab, _pointBuild, Quaternion.identity);
+            Quaternion rotation = new Quaternion(0f, 261.61f, 0f, -0.6f);
+            Base newBase = Instantiate(_basePrefab, _pointBuild, rotation);
             StopCoroutine(_moving);
             _isBusy = false;
             _isBuilding = false;
