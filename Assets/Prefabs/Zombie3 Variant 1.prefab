@@ -21,6 +21,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1779714712752180483}
     - target: {fileID: 1482773070809561979, guid: bc73a5a753b574043bfe0094b89f5a1b, type: 3}
+      propertyPath: _crafter
+      value: 
+      objectReference: {fileID: 6528886985269561151, guid: c7822c4da48a7c149a60140405ea1ba9, type: 3}
+    - target: {fileID: 1482773070809561979, guid: bc73a5a753b574043bfe0094b89f5a1b, type: 3}
       propertyPath: _basePrefab
       value: 
       objectReference: {fileID: 8921497996283847646, guid: c7822c4da48a7c149a60140405ea1ba9, type: 3}

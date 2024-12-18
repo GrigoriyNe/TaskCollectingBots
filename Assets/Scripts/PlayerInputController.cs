@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,15 +14,7 @@ public class PlayerInputController : MonoBehaviour
     private Vector2 _lookDirection;
     private Vector2 _tapPoint;
 
-    private bool _moveShouldContinue;
-    private bool _moveHasStarted;
-
     public event Action<RaycastHit> Clicked;
-
-    private void Awake()
-    {
-        _input = new PlayerInput();
-    }
 
     private void OnEnable()
     {
@@ -39,6 +30,11 @@ public class PlayerInputController : MonoBehaviour
         _input.Player.Click.started -= OnClick;
         _input.Player.Click.performed -= OnClick;
         _input.Player.Click.canceled -= OnClick;
+    }
+
+    private void Awake()
+    {
+        _input = new PlayerInput();
     }
 
     private void Update()
@@ -74,27 +70,6 @@ public class PlayerInputController : MonoBehaviour
             }
         }
     }
-
-    private void OnClickToMoveStarted(InputAction.CallbackContext context)
-    {
-        // set the boolean flags when we click the mouse
-        _moveShouldContinue = true;
-        _moveHasStarted = false;
-    }
-
-    private void OnClickToMove(InputAction.CallbackContext context)
-    {
-        // started to actually move
-        _moveHasStarted = true;
-        OnClick(context);
-    }
-
-    private void OnClickToMoveCanceled(InputAction.CallbackContext context)
-    {
-        // we have released the mouse, so we should not continue movement
-        _moveShouldContinue = false;
-    }
-
 
     private void Move()
     {

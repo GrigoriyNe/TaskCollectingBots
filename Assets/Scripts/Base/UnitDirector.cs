@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BaseCrafter))]
 public class UnitDirector : MonoBehaviour
 {
     private const int OffsetEnumeration = 1;
 
-    [SerializeField] private BaseCrafter _crafer;
+    private BaseCrafter _crafer;
 
     private List<Treasure> _treasures = new List<Treasure>();
     private List<Unit> _units = new List<Unit>();
@@ -21,8 +21,9 @@ public class UnitDirector : MonoBehaviour
 
     private void OnEnable()
     {
-        _wait = new WaitForSeconds(_delayValue);
+        _crafer = this.GetComponent<BaseCrafter>();
         _crafer.UnitCreated += OnUnitAdd;
+        _wait = new WaitForSeconds(_delayValue);
     }
 
     private void OnDisable()

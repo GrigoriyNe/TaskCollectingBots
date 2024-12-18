@@ -16,10 +16,7 @@ public class Scanner : MonoBehaviour
         {
             if (hit.TryGetComponent(out Treasure item))
             {
-                if (item.transform.position.x < _radius)
-                {
-                    treasures.Add(item);
-                }
+                treasures.Add(item);
             }
         }
 

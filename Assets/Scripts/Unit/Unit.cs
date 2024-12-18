@@ -12,6 +12,7 @@ public class Unit : MonoBehaviour
     private Coroutine _moving;
     private Treasure _target;
     private Vector3 _pointBuild;
+    private Quaternion _basePrefabRotation = new Quaternion(0f, 261.61f, 0f, -0.6f);
 
     private bool _isBusy = false;
     private bool _isTreasureTaked = false;
@@ -38,7 +39,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void RegistredBase(Base newBase)
+    public void RegistredOnBase(Base newBase)
     {
         _base = newBase;
 
@@ -55,7 +56,6 @@ public class Unit : MonoBehaviour
         _pointBuild = newBase;
         _moving = null;
         _moving = StartCoroutine(MoveTo(_pointBuild));
-
     }
 
     private IEnumerator MoveTo(Vector3 target)
@@ -64,13 +64,6 @@ public class Unit : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, target, _speed * Time.deltaTime);
             transform.LookAt(target);
-
-            //if (_target.transform.parent != null)
-            //{
-            //    _isTreasureTaked = false;
-            //    _isBusy = false;
-            //    _moving = null;
-            //}
 
             yield return null;
         }
@@ -98,12 +91,12 @@ public class Unit : MonoBehaviour
         }
         else if (transform.position == _pointBuild && _isBuilding)
         {
-            Quaternion rotation = new Quaternion(0f, 261.61f, 0f, -0.6f);
+            Quaternion rotation = _basePrefabRotation;
             Base newBase = Instantiate(_basePrefab, _pointBuild, rotation);
             StopCoroutine(_moving);
             _isBusy = false;
             _isBuilding = false;
-            RegistredBase(newBase);
+            RegistredOnBase(newBase);
         }
     }
 }
