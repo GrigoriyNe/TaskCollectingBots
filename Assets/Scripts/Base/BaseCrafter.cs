@@ -21,13 +21,17 @@ public class BaseCrafter : MonoBehaviour
     private Scanner _scanner;
     private UnitDirector _director;
     private PlayerInputController _input;
+
     private int _treasuresForCreateUint = 3;
     private int _treasuresForCreateBase = 5;
+    private int _radiusMultiplier = 2;
     private int _valueWait = 3;
-    private bool _isNeedBildBase;
+    private bool _isNeedBuildBase;
     private bool _onBaseSelected;
     private bool _isflagIsOver;
+
     private Coroutine _unitCreating;
+    private Coroutine _waitingTreasure;
     private RaycastHit _clickHit;
     private WaitForSeconds _wait;
 
@@ -39,7 +43,7 @@ public class BaseCrafter : MonoBehaviour
         _base = this.GetComponent<Base>();
         _scanner = this.GetComponent<Scanner>();
 
-        _isNeedBildBase = false;
+        _isNeedBuildBase = false;
         _onBaseSelected = false;
         _wait = new WaitForSeconds(_valueWait);
 
@@ -52,15 +56,17 @@ public class BaseCrafter : MonoBehaviour
 
         GameObject player = GameObject.Find("Player");
 
+        if (player == null)
+            return;
+
         if (player.TryGetComponent(out PlayerInputController input))
         {
             _input = input;
-            input.Clicked += TakeFlagPosition;
+            input.Clicked += HandleFlagPlacement;
         }
-
     }
 
-    private void TakeFlagPosition(RaycastHit clickHit)
+    private void HandleFlagPlacement(RaycastHit clickHit)
     {
         if (_isflagIsOver)
             return;
@@ -85,11 +91,11 @@ public class BaseCrafter : MonoBehaviour
         else if (_onBaseSelected && _clickHit.transform.TryGetComponent(out Ground _))
         {
             float distance = Vector3.Distance(transform.position, _clickHit.point);
-            float doubleRadiusScanning = _scanner.Radius * 2;
+            float doubleRadiusScanning = _scanner.Radius * _radiusMultiplier;
 
             if (distance < doubleRadiusScanning)
             {
-                Debug.Log("Too Close");
+                _base.PlayAnimationWhrongPlace();
                 return;
             }
 
@@ -104,19 +110,19 @@ public class BaseCrafter : MonoBehaviour
     private void GiveOrderBuild()
     {
         if (_director.Units.Count > 1)
-            _isNeedBildBase = true;
+            _isNeedBuildBase = true;
         else
             ActivateWaitForBuild();
 
         if (WillThereBeEnoughTreasureToBuild())
         {
-            _isNeedBildBase = false;
+            _isNeedBuildBase = false;
             TakeAwayTreasure();
-            StartCoroutine(CreateNewUnit());
+            _unitCreating = StartCoroutine(CreateNewUnit());
             _director.BildBase(_flag);
 
             _isflagIsOver = true;
-            _input.Clicked -= TakeFlagPosition;
+            _input.Clicked -= HandleFlagPlacement;
         }
         else
         {
@@ -126,8 +132,10 @@ public class BaseCrafter : MonoBehaviour
 
     private void ActivateWaitForBuild()
     {
-        StopCoroutine(WaitTreasureForBildBase());
-        StartCoroutine(WaitTreasureForBildBase());
+        if (_waitingTreasure != null)
+            _waitingTreasure = null;
+
+        _waitingTreasure = StartCoroutine(WaitTreasureForBildBase());
     }
 
     private void TakeAwayTreasure()
@@ -154,7 +162,7 @@ public class BaseCrafter : MonoBehaviour
 
     private IEnumerator CreateNewUnit()
     {
-        while (_isNeedBildBase == false)
+        while (_isNeedBuildBase == false)
         {
             if (Convert.ToInt32(_counterMetal.text.ToString()) >= _treasuresForCreateUint)
             {

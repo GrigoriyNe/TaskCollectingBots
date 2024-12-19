@@ -701,7 +701,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9847e3f67b02da147a77fbff606cbbbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _crafer: {fileID: 6528886985269561151}
 --- !u!114 &1172918361664495500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,7 +743,6 @@ MonoBehaviour:
   _basePrefab: {fileID: 8921497996283847646}
   _counterWood: {fileID: 3104269070901837944}
   _counterMetal: {fileID: 2031641156763945279}
-  _counterMoney: {fileID: 2778839591987485147}
   _spawnPoint: {fileID: 2558361565459077592}
   _flag: {fileID: 939074780920903781}
   _startUnits: 0

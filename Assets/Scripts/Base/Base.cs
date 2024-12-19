@@ -9,7 +9,7 @@ using UnityEngine;
 public class Base : MonoBehaviour
 {
     [SerializeField] private float _waitScaningValue = 5f;
-    [SerializeField] private SelectedAnimator _animator;
+    [SerializeField] private BaseAnimator _animator;
 
     private ShowEffector _effector;
     private UnitDirector _unitDirector;
@@ -52,12 +52,17 @@ public class Base : MonoBehaviour
 
     public void PlayAnimationSelected()
     {
-        _animator.Play();
+        _animator.PlayAnimationSelected();
     }
 
     public void StopAnimationSelected()
     {
-        _animator.Stop();
+        _animator.StopAnimationSelected();
+    }
+    
+    public void PlayAnimationWhrongPlace()
+    {
+        _animator.PlayAnimationWhrongPlace();
     }
 
     private IEnumerator GatherTreasures()
