@@ -25,7 +25,9 @@ public class Unit : MonoBehaviour
 
     public void TakeOrder(Treasure target)
     {
-        if (transform.position.x - target.transform.position.x > _maxDistanse)
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+
+        if (distance > _maxDistanse)
             return;
 
         if (_isBusy == false)
