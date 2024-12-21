@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    [SerializeField] private Base _basePrefab;
     [SerializeField] private TreasureHolder _holder;
     [SerializeField] private float _speed = 3;
+    [SerializeField] private BaseFabric _fabric;
 
     private Base _base;
     private Coroutine _moving;
     private Treasure _target;
     private Vector3 _pointBuild;
-    private Quaternion _basePrefabRotation = new Quaternion(0f, 261.61f, 0f, -0.6f);
 
     private bool _isBusy = false;
     private bool _isTreasureTaked = false;
@@ -93,8 +92,7 @@ public class Unit : MonoBehaviour
         }
         else if (transform.position == _pointBuild && _isBuilding)
         {
-            Quaternion rotation = _basePrefabRotation;
-            Base newBase = Instantiate(_basePrefab, _pointBuild, rotation);
+            Base newBase = _fabric.CreateBase(_pointBuild);
             StopCoroutine(_moving);
             _isBusy = false;
             _isBuilding = false;

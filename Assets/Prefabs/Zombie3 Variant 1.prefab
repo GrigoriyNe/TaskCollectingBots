@@ -17,6 +17,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1482773070809561979, guid: bc73a5a753b574043bfe0094b89f5a1b, type: 3}
+      propertyPath: _fabric
+      value: 
+      objectReference: {fileID: 483610442021413007, guid: b9b06673734e07b429ddd701d12886a9, type: 3}
+    - target: {fileID: 1482773070809561979, guid: bc73a5a753b574043bfe0094b89f5a1b, type: 3}
       propertyPath: _holder
       value: 
       objectReference: {fileID: 1779714712752180483}

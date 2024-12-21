@@ -9,7 +9,6 @@ using UnityEngine;
 public class BaseCrafter : MonoBehaviour
 {
     [SerializeField] private Unit _unitPrefab;
-    [SerializeField] private Base _basePrefab;
     [SerializeField] private TextMeshProUGUI _counterWood;
     [SerializeField] private TextMeshProUGUI _counterMetal;
 
@@ -54,15 +53,24 @@ public class BaseCrafter : MonoBehaviour
 
         _unitCreating = StartCoroutine(CreateNewUnit());
 
-        GameObject player = GameObject.Find("Player");
+        if (_input == null)
+        {
+            PlayerInputController[] input = GameObject.FindObjectsOfType<PlayerInputController>();
 
-        if (player == null)
-            return;
+            if (input == null)
+                return;
 
-        if (player.TryGetComponent(out PlayerInputController input))
+            _input = input[0];
+            _input.Clicked += HandleFlagPlacement;
+        }
+    }
+
+    public void TakeInput(PlayerInputController input)
+    {
+        if (input == null)
         {
             _input = input;
-            input.Clicked += HandleFlagPlacement;
+            _input.Clicked += HandleFlagPlacement;
         }
     }
 
@@ -114,7 +122,7 @@ public class BaseCrafter : MonoBehaviour
         else
             ActivateWaitForBuild();
 
-        if (WillThereBeEnoughTreasureToBuild())
+        if (IsEnoughTreasureToBuild())
         {
             _isNeedBuildBase = false;
             TakeAwayTreasure();
@@ -144,7 +152,7 @@ public class BaseCrafter : MonoBehaviour
         _counterMetal.text = (Convert.ToInt32(_counterMetal.text.ToString()) - _treasuresForCreateBase).ToString();
     }
 
-    private bool WillThereBeEnoughTreasureToBuild()
+    private bool IsEnoughTreasureToBuild()
     {
         if (Convert.ToInt32(_counterWood.text.ToString()) >= _treasuresForCreateBase
             && Convert.ToInt32(_counterMetal.text.ToString()) >= _treasuresForCreateBase)
